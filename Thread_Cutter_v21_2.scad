@@ -10,12 +10,10 @@
 // ==================================
 
 // sizing printing or print a small part to test the object.
-DesignStatus="Tread_Dimension_CUT_Test"; // ["sizing","Thread_Object_Innward","sizing_Inn_Cut","Thread_Object_Outward","sizing_Out_Cut","fitting","Tread_Dimension_CUT_Test","printing"]
-// "sizing": 
-//  "Thread_Object_Innward":
-////    
-//
-//  "sizing_Inn_Cut":
+DesignStatus="Tread_Dimension_CUT_Test"; //["sizing","Thread_Object_Innward","sizing_Inn_Cut","Thread_Object_Outward","sizing_Out_Cut","fitting","Tread_Dimension_CUT_Test","printing"]
+//      "sizing": 
+//      "Thread_Object_Innward":
+//      "sizing_Inn_Cut":
 //----------------------------------
 //  "Thread_Object_Outward": (ridge faching outward)
 ////    On the lid:
@@ -198,7 +196,7 @@ module MirrorMirrorOnTheWall(Offset_X,Offset_Y){
 }
 // BLUEPRINT_Enviroment
 if (DesignStatus=="printing"){
-    //TEST_OBJECT(FN_ExtraFine);
+    TEST_OBJECT(FN_ExtraFine);
 }
 // BLUEPRINT_Enviroment
 if(DesignStatus=="fitting"){
@@ -213,7 +211,14 @@ if (DesignStatus=="sizing"){
     see_me_half(){
         translate([0,0,0]){
             //TEST_OBJECT(FN_Rough);
-            Treadmaker("INN","CUT",0,0,HoeheFlasche-HoeheDeckel+Wandstaerke_Flasche){
+            Treadmaker(     "INN",
+                            "CUT",
+                            0,
+                            0,
+                            HoeheFlasche-HoeheDeckel+Wandstaerke_Flasche,
+                            1,       //  HiggBeeEndtreatment, Vector 0,1,2,3
+                            HiggBee //  =ARC_STEP_INCREMENT_DEGREES*6;
+                            ){
                 Can();
             }
         }
@@ -227,7 +232,14 @@ if (DesignStatus=="sizing"){
             
         }
         translate([0,0,Wandstaerke_Flasche]){
-            Treadmaker("INN","ADD",0,0,HoeheFlasche-HoeheDeckel){
+            Treadmaker( "INN",
+                        "ADD",
+                        0,
+                        0,
+                        HoeheFlasche-HoeheDeckel,
+                        1,       //  HiggBeeEndtreatment, Vector 0,1,2,3
+                        HiggBee //  =ARC_STEP_INCREMENT_DEGREES*6;
+                        ){
                 translate([0,0,HoeheFlasche-HoeheDeckel]){
                     Lid();
                 }
@@ -299,7 +311,14 @@ if (DesignStatus=="Thread_Object_Innward"){
             }
         }
         translate([0,0,Wandstaerke_Flasche]){
-            Treadmaker("INN","ADD",0,0,HoeheFlasche-HoeheDeckel){
+            Treadmaker(     "INN",
+                            "ADD",
+                            0,
+                            0,
+                            HoeheFlasche-HoeheDeckel,
+                            1,       //  HiggBeeEndtreatment, Vector 0,1,2,3
+                            HiggBee //  =ARC_STEP_INCREMENT_DEGREES*6;
+                            ){
                 //translate([0,0,HoeheFlasche-HoeheDeckel]){
                     //Lid();
                 //}
@@ -312,14 +331,14 @@ if (DesignStatus=="sizing_Inn_Cut"){
     see_me_half(){
         translate([0,0,0]){
             //TEST_OBJECT(FN_Rough);
-            !Treadmaker( "INN",  //  THREADDIRECTION
-                        "CUT",  //  DETERMINATOR="ADD"
-                        0,      //  X
-                        0,      //  Y
-                        HoeheFlasche-HoeheDeckel+BottomThickness,   //  Z
-                        1,      //  HiggBeeEndtreatment, Vector 0,1,2,3
-                        HiggBee //  =ARC_STEP_INCREMENT_DEGREES*6;
-                        ){
+            Treadmaker(    "INN",  //  THREADDIRECTION
+                            "CUT",  //  DETERMINATOR="ADD"
+                            0,      //  X
+                            0,      //  Y
+                            HoeheFlasche-HoeheDeckel+BottomThickness,   //  Z
+                            1,      //  HiggBeeEndtreatment, Vector 0,1,2,3
+                            HiggBee //  =ARC_STEP_INCREMENT_DEGREES*6;
+                            ){
                 Can();
             }
         }
@@ -390,7 +409,14 @@ if (DesignStatus=="Thread_Object_Outward"){
             }
         }
         translate([0,0,Wandstaerke_Flasche]){
-            Treadmaker("OUT","ADD",0,0,HoeheFlasche-HoeheDeckel){
+            Treadmaker(     "OUT",
+                            "ADD",
+                            0,
+                            0,
+                            HoeheFlasche-HoeheDeckel,
+                            1,       //  HiggBeeEndtreatment, Vector 0,1,2,3
+                            HiggBee //  =ARC_STEP_INCREMENT_DEGREES*6;
+                            ){
                 //translate([0,0,HoeheFlasche-HoeheDeckel]){
                     //Lid();
                 //}
@@ -411,7 +437,7 @@ if (DesignStatus=="sizing_Out_Cut"){
                         2,
                         HiggBee*1 //  =ARC_STEP_INCREMENT_DEGREES*6
                         ){
-                //Can();
+                Can();
             }
         }
         translate([0,0,0]){
@@ -491,7 +517,14 @@ if (DesignStatus=="Tread_Dimension_CUT_Test"){
 //            }
 //        }
         translate([0,0,0]){
-            Treadmaker("OUT","ADD",0,0,HoeheFlasche-HoeheDeckel,3){
+            Treadmaker(     "OUT",
+                            "ADD",
+                            0,
+                            0,
+                            HoeheFlasche-HoeheDeckel,
+                            3,       //  HiggBeeEndtreatment, Vector 0,1,2,3
+                            HiggBee //  =ARC_STEP_INCREMENT_DEGREES*6;
+                            ){
                 //translate([0,0,HoeheFlasche-HoeheDeckel]){
                     //Lid();
                 //}
@@ -544,7 +577,7 @@ module see_me_half(){
                                     //cube([60,60,HoeheFlasche+HoeheDeckel],center=false);
                                 }
                                 rotate([0,0,20]){
-                                    Arc_CUT(35);
+                                    Arc_CUT(15);
                                 }    
                             }
                         }
@@ -656,7 +689,13 @@ module Can(){
         }
     }
 }
-module Treadmaker(THREADDIRECTION="INN",DETERMINATOR="ADD",X=-10,Y=-20,Z=-30,HiggBeeEndtreatment=0,HIGG_BEE){
+module Treadmaker(  THREADDIRECTION="INN",
+                    DETERMINATOR="ADD",
+                    X=-10,
+                    Y=-20,
+                    Z=-30,
+                    HiggBeeEndtreatment=0,
+                    HIGG_BEE){
 // ===================================================================================================================================
 //                                                                    Inward
 // ===================================================================================================================================
@@ -812,11 +851,11 @@ module Iterator(CUT_SPACING,A,DIRECTION,HiggBeeEndtreatment,ADDITIONAL_END){
     // CUT_SPACING: Creates a slightly bigger instance of the Helix Objekt for cutting to make the Thread fit (Offset on the 2D-Shape the Treadprofile is based on)
     // A [1 or 0]: Determines if the Cut Spacing is actually applied by Multipliing "CUT_SPACING" whith either 0 or 1
     // DIRECTION [1 or 0]: Determines the direktion of the thread, Outward or Inward.
-    
-//    
+    // ADDITIONAL_END: ??? 
+
+echo("ADDITIONAL_END",ADDITIONAL_END);    
 MAX_DEGREE_CALC=round(360*(H1_CYLINDER/((D1_CYLINDER*PI)*tan(ASCENT_Deg)))+ADDITIONAL_END);
-echo("MAX_DEGREE_CALC",MAX_DEGREE_CALC);    
-//    
+echo("MAX_DEGREE_CALC",MAX_DEGREE_CALC);        
     for(k=[0:360/THREAD_COUNT:360]){
         rotate([0,0,k]){
             for(j=[0:ARC_STEP_INCREMENT_DEGREES:MAX_DEGREE_CALC-ARC_STEP_INCREMENT_DEGREES]){ // WAS: MAX_DEGREE_CALC-ARC_STEP_INCREMENT_DEGREES
