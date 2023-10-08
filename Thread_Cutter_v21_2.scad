@@ -536,7 +536,7 @@ if (DesignStatus=="Tread_Dimension_CUT_Test"){
     }
 }
 // ================================================================================================================================================
-//
+// 
 // ================================================================================================================================================
 // BLUEPRINT_Enviroment
 module see_me_half(){
@@ -576,8 +576,8 @@ module see_me_half(){
                                 translate([0,5,0]){
                                     //cube([60,60,HoeheFlasche+HoeheDeckel],center=false);
                                 }
-                                rotate([0,0,20]){
-                                    Arc_CUT(15);
+                                rotate([0,0,0]){
+                                    Arc_CUT(25);
                                 }    
                             }
                         }
@@ -727,7 +727,7 @@ module Treadmaker(  THREADDIRECTION="INN",
                 translate([0,0,HoeheFlasche+Spacing_Lid_Can_Top]){               //  Upper Cut of Thread helix
                     cylinder(h=H1_CYLINDER,d=60);
                 }
-                translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness+Spacing_Lid_Can_Top-H1_CYLINDER]){                       //  Lower Cut of Thread helix
+                translate([0,0,HoeheFlasche-HoeheDeckel+Spacing_Lid_Can_Top-H1_CYLINDER]){                       //  Lower Cut of Thread helix
                     cylinder(h=H1_CYLINDER,d=60);
                 }
             }
