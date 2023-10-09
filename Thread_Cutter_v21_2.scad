@@ -43,10 +43,10 @@ Spacing_Lid_Can_Top=0.1;
 rotation_Diff_Lid_Can=0;
 
 // ==== TootProfile ====
-Strings="foo"; // [foo, bar, baz]
+TOOTH_PROFILE="Trapezoid"; //["Trapezoid","SQUARE","TREAD_TOOTH","TOOTH-ON-TOOTH"]
 
 
-
+//Strings="foo"; // [foo, bar, baz]
 
 
 D1_CYLINDER=Durchmesser_Flasche;
@@ -270,14 +270,14 @@ if (DesignStatus=="sizing"){
 if (DesignStatus=="Thread_Object_Innward"){
     see_me_half(){
         translate([0,0,0]){
-        //Tooth_Profile();
+        //Tooth_Profile(TOOTH_PROFILE);
         }
         union(){ // A single step element the Thread gets assembled of 
             hull(){
                 rotate([0,0,ARC_STEP_INCREMENT_DEGREES]){
                     translate([0,Durchmesser_Flasche/2,Wandstaerke_Flasche+HoeheFlasche-HoeheDeckel]){
                         rotate([-90,0,-90]){
-                        3D_Base_Shape(0,0){Tooth_Profile();}
+                        3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
                         }
                     }//ASCENT_STEP
                 }
@@ -286,7 +286,7 @@ if (DesignStatus=="Thread_Object_Innward"){
                                 Durchmesser_Flasche/2,
                                 Wandstaerke_Flasche+HoeheFlasche-HoeheDeckel+ARC_STEP_INCREMENT_DEGREES*ASCENT_STEP]){
                         rotate([-90,0,-90]){
-                        3D_Base_Shape(0,0){Tooth_Profile();}
+                        3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
                         }
                     }
                 }
@@ -299,7 +299,7 @@ if (DesignStatus=="Thread_Object_Innward"){
                                 Durchmesser_Flasche/2,
                                 Wandstaerke_Flasche+HoeheFlasche-HoeheDeckel+ARC_STEP_INCREMENT_DEGREES*ASCENT_STEP]){
                         rotate([-90,0,-90]){
-                        3D_Base_Shape(0,0){Tooth_Profile();}
+                        3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
                         }
                     }//ASCENT_STEP
                 }
@@ -308,7 +308,7 @@ if (DesignStatus=="Thread_Object_Innward"){
                                 Durchmesser_Flasche/2,
                                 Wandstaerke_Flasche+HoeheFlasche-HoeheDeckel+2*ARC_STEP_INCREMENT_DEGREES*ASCENT_STEP]){
                         rotate([-90,0,-90]){
-                        3D_Base_Shape(0,0){Tooth_Profile();}
+                        3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
                         }
                     }
                 }
@@ -368,14 +368,14 @@ if (DesignStatus=="sizing_Inn_Cut"){
 if (DesignStatus=="Thread_Object_Outward"){
     see_me_half(){
         translate([0,0,0]){
-        Tooth_Profile();
+        Tooth_Profile(TOOTH_PROFILE);
         }
         union(){ // A single step element the Thread gets assembled of 
             hull(){
                 rotate([0,0,ARC_STEP_INCREMENT_DEGREES]){
                     translate([0,Durchmesser_Flasche/2,Wandstaerke_Flasche+HoeheFlasche-HoeheDeckel]){
                         rotate([-90,0,-90]){
-                        3D_Base_Shape(0,0){Tooth_Profile();}
+                        3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
                         }
                     }//ASCENT_STEP
                 }
@@ -384,7 +384,7 @@ if (DesignStatus=="Thread_Object_Outward"){
                                 Durchmesser_Flasche/2,
                                 Wandstaerke_Flasche+HoeheFlasche-HoeheDeckel+ARC_STEP_INCREMENT_DEGREES*ASCENT_STEP]){
                         rotate([-90,0,-90]){
-                        3D_Base_Shape(0,0){Tooth_Profile();}
+                        3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
                         }
                     }
                 }
@@ -397,7 +397,7 @@ if (DesignStatus=="Thread_Object_Outward"){
                                 Durchmesser_Flasche/2,
                                 Wandstaerke_Flasche+HoeheFlasche-HoeheDeckel+ARC_STEP_INCREMENT_DEGREES*ASCENT_STEP]){
                         rotate([-90,0,-90]){
-                        3D_Base_Shape(0,0){Tooth_Profile();}
+                        3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
                         }
                     }//ASCENT_STEP
                 }
@@ -406,7 +406,7 @@ if (DesignStatus=="Thread_Object_Outward"){
                                 Durchmesser_Flasche/2,
                                 Wandstaerke_Flasche+HoeheFlasche-HoeheDeckel+2*ARC_STEP_INCREMENT_DEGREES*ASCENT_STEP]){
                         rotate([-90,0,-90]){
-                        3D_Base_Shape(0,0){Tooth_Profile();}
+                        3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
                         }
                     }
                 }
@@ -476,14 +476,14 @@ if (DesignStatus=="sizing_Out_Cut"){
 if (DesignStatus=="Tread_Dimension_CUT_Test"){
     see_me_half(){
         translate([0,0,0]){
-        Tooth_Profile();
+            Tooth_Profile(TOOTH_PROFILE);
         }
 //        union(){ // A single step element the Thread gets assembled of 
 //            hull(){
 //                rotate([0,0,ARC_STEP_INCREMENT_DEGREES]){
 //                    translate([0,Durchmesser_Flasche/2,Wandstaerke_Flasche+HoeheFlasche-HoeheDeckel]){
 //                        rotate([-90,0,-90]){
-//                        3D_Base_Shape(0,0){Tooth_Profile();}
+//                        3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
 //                        }
 //                    }//ASCENT_STEP
 //                }
@@ -492,7 +492,7 @@ if (DesignStatus=="Tread_Dimension_CUT_Test"){
 //                                Durchmesser_Flasche/2,
 //                                Wandstaerke_Flasche+HoeheFlasche-HoeheDeckel+ARC_STEP_INCREMENT_DEGREES*ASCENT_STEP]){
 //                        rotate([-90,0,-90]){
-//                        3D_Base_Shape(0,0){Tooth_Profile();}
+//                        3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
 //                        }
 //                    }
 //                }
@@ -505,7 +505,7 @@ if (DesignStatus=="Tread_Dimension_CUT_Test"){
 //                                Durchmesser_Flasche/2,
 //                                Wandstaerke_Flasche+HoeheFlasche-HoeheDeckel+ARC_STEP_INCREMENT_DEGREES*ASCENT_STEP]){
 //                        rotate([-90,0,-90]){
-//                        3D_Base_Shape(0,0){Tooth_Profile();}
+//                        3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
 //                        }
 //                    }//ASCENT_STEP
 //                }
@@ -514,7 +514,7 @@ if (DesignStatus=="Tread_Dimension_CUT_Test"){
 //                                Durchmesser_Flasche/2,
 //                                Wandstaerke_Flasche+HoeheFlasche-HoeheDeckel+2*ARC_STEP_INCREMENT_DEGREES*ASCENT_STEP]){
 //                        rotate([-90,0,-90]){
-//                        3D_Base_Shape(0,0){Tooth_Profile();}
+//                        3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
 //                        }
 //                    }
 //                }
@@ -890,7 +890,7 @@ K=0;
                                         (MAX_DEGREE_CALC-J+ARC_STEP_INCREMENT_DEGREES)/(HiggBee+ARC_STEP_INCREMENT_DEGREES),
                                         1   ]){
                                     3D_Base_Shape(DELTA*A,DIRECTION){
-                                        Tooth_Profile();
+                                        Tooth_Profile(TOOTH_PROFILE);
                                     }
                                 }
                             }
@@ -899,7 +899,7 @@ K=0;
                                         (J+ARC_STEP_INCREMENT_DEGREES)/(HiggBee+ARC_STEP_INCREMENT_DEGREES),
                                         1   ]){
                                     3D_Base_Shape(DELTA*A,DIRECTION){
-                                        Tooth_Profile();    
+                                        Tooth_Profile(TOOTH_PROFILE);    
                                     }
                                 }
                             }
@@ -907,7 +907,7 @@ K=0;
                                 scale([1,1,1]){
                                     //echo("3D_Base_Shape",DELTA*A);
                                     3D_Base_Shape(DELTA*A,DIRECTION){
-                                        Tooth_Profile();
+                                        Tooth_Profile(TOOTH_PROFILE);
                                     }
                                 }
                             }
@@ -918,7 +918,7 @@ K=0;
         }
     }
 }
-//3D_Base_Shape(0,0){Tooth_Profile();}
+//3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
 // Creates the 3D-Object from the Toot_Profile, its a very thin Object because the followiung hull-Funktion dosent work with a 2D-Object
 module 3D_Base_Shape(DELTA,DIRECTION){
     linear_extrude(height=0.1,scale=0.5){
@@ -1050,15 +1050,23 @@ module DONUT(DIAMETER,DIAMETER_RING,SCAL_X,SCAL_Y){
 // ===============================================================================
 // =--------------------------------- 2D-Shapes ---------------------------------=
 // ===============================================================================
-//Tooth_Profile();
-module Tooth_Profile(){
+//Tooth_Profile("TOOTH-ON-TOOTH");
+module Tooth_Profile(TOOTH_PROFILE="Trapezoid"){                           
     //polygon(points=[[-2,3],[-2,-3],[2,-1],[2,1]]);
-    //polygon(points=[[-1,1.5],[-1,-1.5],[1,-0.5],[1,0.5]]);
-    //square([1,1],center=true);
-    circle(r=SHAPE_RADIUS,$fn=4);
-    //polygon(points=[[-2,-4],[-2,0],[2,0],[2,-1]]);
+    if (TOOTH_PROFILE=="Trapezoid"){
+        // Trapezoid 1/3 vs 2 
+        polygon(points=[[-1,1.5],[-1,-1.5],[1,-0.5],[1,0.5]]);
+    }
+    else if(TOOTH_PROFILE=="SQUARE"){
+        square([1,1],center=true);
+    }
+    else if(TOOTH_PROFILE=="TREAD_TOOTH"){
+        circle(r=SHAPE_RADIUS,$fn=4);
+    }
+    else if(TOOTH_PROFILE=="TOOTH-ON-TOOTH"){               // like plastic bottels have, Two oposing trapezoid tooth that glide on each other
+        polygon(points=[[-1,-2],[-1,0],[1,0],[1,-0.5]]);
+    }
 }
-
 //2D_Ring_Shape(20,1);
 module 2D_Ring_Shape(OUTER_D,WALLTHICKNESS){
     difference(){
