@@ -1,10 +1,11 @@
 {
+    "fileFormatVersion": "1",
     "parameterSets": {
         "design default values": {
             "ARC_STEP_INCREMENT_DEGREES": "5",
             "ASCENT_Deg": "9",
             "BottomThickness": "1",
-            "DesignStatus": "Tread_Dimension_CUT_Test",
+            "DesignStatus": "sizing",
             "Durchmesser_Flasche": "26",
             "HigbeeIncrementrs": "6",
             "HoeheDeckel": "30",
@@ -19,8 +20,26 @@
             "WandstaerkeDeckel": "1.5",
             "Wandstaerke_Flasche": "1.5",
             "rotation_Diff_Lid_Can": "0"
+        },
+        "test_values": {
+            "ARC_STEP_INCREMENT_DEGREES": "5",
+            "ASCENT_Deg": "12",
+            "BottomThickness": "1",
+            "DesignStatus": "sizing",
+            "Durchmesser_Flasche": "26",
+            "HigbeeIncrementrs": "6",
+            "HoeheDeckel": "20",
+            "HoeheFlasche": "25",
+            "ScrewMount_D": "15",
+            "Screw_Head_H": "2.5",
+            "Spacing_Lid_Can_Cylinder": "0.10000000000000001",
+            "Spacing_Lid_Can_Top": "0.59999999999999998",
+            "Strings": "foo",
+            "THREAD_COUNT": "3",
+            "TopThickness": "1.5",
+            "WandstaerkeDeckel": "1.5",
+            "Wandstaerke_Flasche": "1.5",
+            "rotation_Diff_Lid_Can": "0"
         }
-    },
-    "parameterSets": "",
-    "fileFormatVersion": "1"
+    }
 }
