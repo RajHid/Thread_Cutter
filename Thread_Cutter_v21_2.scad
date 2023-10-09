@@ -33,18 +33,21 @@ HoeheFlasche=10;
 Wandstaerke_Flasche=1.5;
 BottomThickness=1;
 // ==== Lid ====
-
 WandstaerkeDeckel=1.5;
 HoeheDeckel=7;
 TopThickness=0.7;
 
 // ==== Helping ====
-
 Spacing_Lid_Can_Cylinder=0.1;
 Spacing_Lid_Can_Top=0.1;
 rotation_Diff_Lid_Can=0;
 
-// =================
+// ==== TootProfile ====
+Strings="foo"; // [foo, bar, baz]
+
+
+
+
 
 D1_CYLINDER=Durchmesser_Flasche;
 H1_CYLINDER=HoeheDeckel-TopThickness;
@@ -63,7 +66,8 @@ THREAD_COUNT=3;
 ARC_STEP_INCREMENT_DEGREES=5;// Size of one subobject aka the Arc lenght of the Extrusion of the Treadprofile, the wohle Thtread gets assembled by putting them together step by step
 
 // Length of the Higgbee Cut is determined by x times Arc ARC_STEP_INCREMENT_DEGREES (aka 6° if 1°)
-HiggBee=ARC_STEP_INCREMENT_DEGREES*6;
+HigbeeIncrementrs=6;
+HiggBee=ARC_STEP_INCREMENT_DEGREES*HigbeeIncrementrs;
 
 
 // The Screw head diameter
@@ -724,10 +728,10 @@ module Treadmaker(  THREADDIRECTION="INN",
                                         HIGG_BEE            // if the spiral needs to be longer to cut fully through
                         ]);
                 }
-                translate([0,0,HoeheFlasche+Spacing_Lid_Can_Top]){               //  Upper Cut of Thread helix
+                translate([0,0,HoeheFlasche+Spacing_Lid_Can_Top]){                                                  //  Upper Cut of Thread helix
                     cylinder(h=H1_CYLINDER,d=60);
                 }
-                translate([0,0,HoeheFlasche-HoeheDeckel+Spacing_Lid_Can_Top-H1_CYLINDER]){                       //  Lower Cut of Thread helix
+                translate([0,0,HoeheFlasche-HoeheDeckel+Spacing_Lid_Can_Top-H1_CYLINDER]){                          //  Lower Cut of Thread helix // Was +TopThickness+
                     cylinder(h=H1_CYLINDER,d=60);
                 }
             }
@@ -1049,9 +1053,9 @@ module DONUT(DIAMETER,DIAMETER_RING,SCAL_X,SCAL_Y){
 //Tooth_Profile();
 module Tooth_Profile(){
     //polygon(points=[[-2,3],[-2,-3],[2,-1],[2,1]]);
-    polygon(points=[[-1,1.5],[-1,-1.5],[1,-0.5],[1,0.5]]);
+    //polygon(points=[[-1,1.5],[-1,-1.5],[1,-0.5],[1,0.5]]);
     //square([1,1],center=true);
-    //circle(r=SHAPE_RADIUS,$fn=6);
+    circle(r=SHAPE_RADIUS,$fn=4);
     //polygon(points=[[-2,-4],[-2,0],[2,0],[2,-1]]);
 }
 
