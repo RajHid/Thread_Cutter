@@ -4,7 +4,6 @@
 // = Used Libraries =
 // ==================================
 
-
 // ==================================
 // = Variables =
 // ==================================
@@ -24,7 +23,7 @@ DesignStatus="Tread_Dimension_CUT_Test"; //["sizing","Thread_Object_Innward","si
 // "sizing_Out_Cut":
 // "fitting":
 // "Tread_Dimension_CUT_Test":
-// "printing":                  Printable Assembly part_1, part_2, ...
+// "printing":                          Printable Assembly part_1, part_2, ...
 
 
 // ==== Can ====
@@ -45,16 +44,11 @@ rotation_Diff_Lid_Can=0;
 // ==== TootProfile ====
 TOOTH_PROFILE="Trapezoid"; //["Trapezoid","SQUARE","TREAD_TOOTH","TOOTH-ON-TOOTH"]
 
-
-//Strings="foo"; // [foo, bar, baz]
-
-
 D1_CYLINDER=Durchmesser_Flasche;
 H1_CYLINDER=HoeheDeckel-TopThickness;
 
 echo("D1_CYLINDER",D1_CYLINDER);
 echo("H1_CYLINDER",H1_CYLINDER);
-
 
 // === Helix Parameters ===
 
@@ -69,49 +63,12 @@ ARC_STEP_INCREMENT_DEGREES=5;// Size of one subobject aka the Arc lenght of the 
 HigbeeIncrementrs=6;
 HiggBee=ARC_STEP_INCREMENT_DEGREES*HigbeeIncrementrs;
 
-
-// The Screw head diameter
-ScrewMount_D=15;
-// The Height of the Screw head
-Screw_Head_H=2.5;
+// ==================================
+// = Customizer Limit =
+// ==================================
 
 module __Customizer_Limit__ () {}  // bevfore these the variables are usable in the cutomizer
 shown_by_customizer = false;
-// === Variations of Trads ===
-
-// ====== Innward ====
-
-// ========= Lid =====
-/*
-    Tread Parameter:
-        * ADD
-        * Tread_Spacing             No
-        * Open side:
-            Higgbee Cut Applied     Yes
-            
-        * Closed side:
-            Higgbee Cut Applied:    No
-            
-*/
-// ========= Can =====
-/*
-    Tread Parameter:
-        * CUT
-        * Tread Spacing             Yes
-        * Open side:
-            Higgbee Cut Applied:    No
-            
-        * Closed side:
-            Higgbee Cut Applied     Yes
-*/
-// ====== Outward ====
-
-// ========= Lid =====
-
-// ========= Can =====
-
-//// ==== Thread on Thread ====
-
 
 // === Facettes Numbers ===
 
@@ -263,7 +220,6 @@ if (DesignStatus=="sizing"){
         }
     }
 }
-
 // ---------------------------------------------------------------------------------------------------------
 // --------------                          Thread_Object_Outward                              --------------
 // ---------------------------------------------------------------------------------------------------------
@@ -478,48 +434,6 @@ if (DesignStatus=="Tread_Dimension_CUT_Test"){
         translate([0,0,0]){
             Tooth_Profile(TOOTH_PROFILE);
         }
-//        union(){ // A single step element the Thread gets assembled of 
-//            hull(){
-//                rotate([0,0,ARC_STEP_INCREMENT_DEGREES]){
-//                    translate([0,Durchmesser_Flasche/2,Wandstaerke_Flasche+HoeheFlasche-HoeheDeckel]){
-//                        rotate([-90,0,-90]){
-//                        3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
-//                        }
-//                    }//ASCENT_STEP
-//                }
-//                rotate([0,0,ARC_STEP_INCREMENT_DEGREES*2]){
-//                    translate([ 0,
-//                                Durchmesser_Flasche/2,
-//                                Wandstaerke_Flasche+HoeheFlasche-HoeheDeckel+ARC_STEP_INCREMENT_DEGREES*ASCENT_STEP]){
-//                        rotate([-90,0,-90]){
-//                        3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        union(){ // A second single step element the Thread gets assembled of 
-//            hull(){
-//                rotate([0,0,ARC_STEP_INCREMENT_DEGREES*2]){
-//                    translate([ 0,
-//                                Durchmesser_Flasche/2,
-//                                Wandstaerke_Flasche+HoeheFlasche-HoeheDeckel+ARC_STEP_INCREMENT_DEGREES*ASCENT_STEP]){
-//                        rotate([-90,0,-90]){
-//                        3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
-//                        }
-//                    }//ASCENT_STEP
-//                }
-//                rotate([0,0,ARC_STEP_INCREMENT_DEGREES*3]){
-//                    translate([ 0,
-//                                Durchmesser_Flasche/2,
-//                                Wandstaerke_Flasche+HoeheFlasche-HoeheDeckel+2*ARC_STEP_INCREMENT_DEGREES*ASCENT_STEP]){
-//                        rotate([-90,0,-90]){
-//                        3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
-//                        }
-//                    }
-//                }
-//            }
-//        }
         translate([0,0,0]){
             Treadmaker(     "OUT",
                             "ADD",
@@ -605,28 +519,6 @@ module Arc_CUT(D){
         }
     }
 }
-Projection_Cutter(5){
-//see_me_half();
-}
-
-//// == Cutes a slice of the Objekts
-Intersection_Test_Cut("xy",1.5,16){
- //Intersection_Test_Cut( "xy",           // "Plaine xy yz xz", 
-                       // 1,              // Slicethickness , 
-                        //5,              // Distance from coordinate origin in plaine )
-   // OBJECTMODULESHERE 
-   //Frame_Base();
-}
-
-// ==================================
-// = Modus =
-// ==================================
-
- 
-// ==================================
-// = Stage =
-// ==================================
-// Final module for Produktion
 
 module Assembly(){
 
@@ -647,29 +539,6 @@ module TEST_OBJECT(FN_FACETTES){
 // ===============================================================================
 // =--------------------------------- Modules -----------------------------------=
 // ===============================================================================
-//TEST_OBJECT();
-
-//                // ==== Can ====
-//                Durchmesser_Flasche=50;
-//                HoeheFlasche=25;
-//                Wandstaerke_Flasche=5;
-//                BottomThickness=5;
-//                // ==== Lid ====
-//
-//                WandstaerkeDeckel=3;
-//                HoeheDeckel=25;
-//                TopThickness=3;
-//
-//                // =================
-//
-//                D1_CYLINDER=Durchmesser_Flasche;
-//                H1_CYLINDER=HoeheDeckel-WandstaerkeDeckel*2;
-
-//Spacing_Lid_Can_Cylinder=0.1;
-//Spacing_Lid_Can_Top=0.1;
-//rotation_Diff_Lid_Can=0;
-
-
 module TEST_CUTCUBE(){
     cube([50,100,30]);
 }
@@ -789,7 +658,6 @@ module Treadmaker(  THREADDIRECTION="INN",
         }
     }
 }
-
 //Helixiterator(HelixParameterVECTOR);
 module Helixiterator(HelixParameterVECTOR){
 //TEST_HiggBee=0;   // No HiggBee cut on either ends
@@ -939,7 +807,6 @@ module 3D_Base_Shape(DELTA,DIRECTION){
 module TEST_CUTCYLINDER(FN_FACETTES){
     cylinder(h=35,d1=55,d2=75,$fn=FN_FACETTES);
 }
-
 //Screwcutter(100,10,100,4,1,5);
 module Screwcutter( SCREW_HEAD_h=200,
                     SCREW_HEAD_d=40,
@@ -957,7 +824,6 @@ module Screwcutter( SCREW_HEAD_h=200,
         cylinder(h=SCREW_BOLT_h,d=SCREW_BOLT_d,$fn=32);
     }
 }
-
 //Bolt(25,3,8,3);
 module Bolt(BOLTLENGTH,BOLTDIAMETER,HEADDIAMETER,HEADHEIGHT){
     cylinder(h=BOLTLENGTH,d=BOLTDIAMETER,center=false,$fn=FN_Performance);
@@ -966,7 +832,6 @@ module Bolt(BOLTLENGTH,BOLTDIAMETER,HEADDIAMETER,HEADHEIGHT){
         cylinder(h=HEADHEIGHT,d=HEADDIAMETER,center=true,$fn=6);
     }
 }
-
 //Projection_Cutter(3){sphere(10);};
 module Projection_Cutter(Offset_z){    
     projection(cut = true){
@@ -1032,7 +897,6 @@ module Linear_Extruding(ExtrudeLength,ExrtudingDirektionInverter){
 // ---------------------------------- Rotate Extrude Modules ---------------------
 // ===============================================================================
 
-
 //DONUT(1,20,1,7);
 module DONUT(DIAMETER,DIAMETER_RING,SCAL_X,SCAL_Y){
 //DIAMETER The dough part
@@ -1087,7 +951,6 @@ module 2D_Rounded_Square_Base_Shape(DIMENSION_X=10,DIMENSION_Y=20,RADIUS=2){
 // =--------------------------------- Textembossing -----------------------------=
 // ===============================================================================
 
-
 // ===============================================================================
 // =--------------------------------- Smoothing ---------------------------------=
 // ===============================================================================
@@ -1101,7 +964,6 @@ module 2D_Rounded_Square_Base_Shape(DIMENSION_X=10,DIMENSION_Y=20,RADIUS=2){
 
 // a straigt line on edges and corners
 2D_Chamfer_BOOLEAN=false;
-
     
 module Smooth(r=3){
     //$fn=30;
