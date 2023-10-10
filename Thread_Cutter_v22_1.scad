@@ -12,38 +12,155 @@
 // ==================================
 
 // sizing printing or print a small part to test the object.
-DesignStatus="sizing"; // ["sizing","fitting","printing"]
-// Variables seen by customizer
+DesignStatus="Tread_Dimension_CUT_Test"; //["sizing","Thread_Object_Innward","sizing_Inn_Cut","Thread_Object_Outward","sizing_Out_Cut","fitting","Tread_Dimension_CUT_Test","printing"]
+//      "sizing": 
+//      "Thread_Object_Innward":
+//      "sizing_Inn_Cut":
+//----------------------------------
+//  "Thread_Object_Outward": (ridge faching outward)
+////    On the lid:
+////    -   cut full trough open end
+////    -   cut of Spiral at the top of the lid, aka roof of the lid
+////    on the can:
+////    - apply Higbee at both ends
+// "sizing_Out_Cut":
+// "fitting":
+// "Tread_Dimension_CUT_Test":
+// "printing":                  Printable Assembly part_1, part_2, ...
 
-TestSlab_X=50;
-TestSlab_Y=100;
-TestSlab_Z=30;
 
-TestCylinder_H=35;
-TestCylinder_D1=25;
-TestCylinder_D2=45;
+// ==== Can ====
+Durchmesser_Flasche=25;
+HoeheFlasche=10;
+Wandstaerke_Flasche=1.5;
+BottomThickness=1;
+// ==== Lid ====
+WandstaerkeDeckel=1.5;
+HoeheDeckel=7;
+TopThickness=0.7;
 
-TestSphere_D=42;
+// ==== Helping ====
+Spacing_Lid_Can_Cylinder=0.1;
+Spacing_Lid_Can_Top=0.1;
+rotation_Diff_Lid_Can=0;
 
-module __Customizer_Limit__ () {}  // before these, the variables are usable in the cutomizer
+// ==== TootProfile ====
+TOOTH_PROFILE="Trapezoid"; //["Trapezoid","SQUARE","TREAD_TOOTH","TOOTH-ON-TOOTH"]
+
+
+//Strings="foo"; // [foo, bar, baz]
+
+
+D1_CYLINDER=Durchmesser_Flasche;
+H1_CYLINDER=HoeheDeckel-TopThickness;
+
+echo("D1_CYLINDER",D1_CYLINDER);
+echo("H1_CYLINDER",H1_CYLINDER);
+
+
+// === Helix Parameters ===
+
+// Degrees the helix ascends
+ASCENT_Deg=12;
+// Number of Threads
+THREAD_COUNT=3;
+// Degrees the helixsegments the helix is made of take in each step. aka 1° will get you 360 segments the helix is made of.
+ARC_STEP_INCREMENT_DEGREES=5;// Size of one subobject aka the Arc lenght of the Extrusion of the Treadprofile, the wohle Thtread gets assembled by putting them together step by step
+
+// Length of the Higgbee Cut is determined by x times Arc ARC_STEP_INCREMENT_DEGREES (aka 6° if 1°)
+HigbeeIncrementrs=6;
+HiggBee=ARC_STEP_INCREMENT_DEGREES*HigbeeIncrementrs;
+
+
+// The Screw head diameter
+ScrewMount_D=15;
+// The Height of the Screw head
+Screw_Head_H=2.5;
+
+module __Customizer_Limit__ () {}  // bevfore these the variables are usable in the cutomizer
 shown_by_customizer = false;
-
-Invisible=42;
-TestslabTransl_X=25;
-TestslabRotate_X=30;
 
 // === Facettes Numbers ===
 
 FN_HexNut=6;
 FN_Performance=36;
 FN_FooBaa=12;
-// Divisebile by 4 to align Cylinders whithout small intersections taht cause problems due to smal holes in surfaches and self intersections on round objects
-
+// Divisebile by 4 to align Cylinders whithout small intersections
 FN_Rough=12;
 FN_MediumRough=16;
 FN_Medium=36;
 FN_Fine=72;
 FN_ExtraFine=144;
+
+RENDERMODUS=32;
+FN_RENDERMODUS=RENDERMODUS;
+
+// provides a $fn-Value for all cylinders that fits that of the helix, to avoid smal artifacts that would cause problems becaus of not closed surface or intersections whititself 
+FN_FACETETTES_NUMBER=360/ARC_STEP_INCREMENT_DEGREES;
+
+function FN_Facettes(x) = 1;
+
+// Heght of the used Profile of the Thread
+// needed for corection and ajustments on MAX_DEGREE
+Tooth_Profile_Height=4.25;
+// Aditional parameter to modify the length of MAX_DEGREE so the thread will cut throug the objekt compleatly at the Ends
+// Problem is that the thread is based on a middle line and the height/MAX_DEGREE is calculatet on that parameter. The Tooth Profile is perpendicular to that.
+// So the ends of the instance of the cutting Thread will bee a little bit to Short.
+// The faulty result would be a to narrow cut to fit the Thread
+MAX_DEGREE_END=round(360*(Tooth_Profile_Height/((D1_CYLINDER*PI)*tan(ASCENT_Deg))));
+echo("MAX_DEGREE_END",MAX_DEGREE_END);
+// Parameter that provides the correct amount of degrees the Helix Rotates to met the Height of a bottle cap, aka the helix fits in the height of the bottle cap
+
+MAX_DEGREE=round(360*(H1_CYLINDER/((D1_CYLINDER*PI)*tan(ASCENT_Deg)))); // --> Gets used in iterator now due to need of parametering the Start and end of the Spiral, Spiral needs to be longer to dutt fully trough
+echo("MAX_DEGREE",MAX_DEGREE);
+
+// Cutter or Actual Tread ("Cut" slith vs "ADD" tooth)
+ThreadDeterminator="CUT"; //  [CUT:Cutting, ADD:Adding]
+// Determines the direction the Thread will have, or tooth on tooth 
+Direction="INN"; // [INN:Innward, OUT:Outward, TOTH:Tooth on Tooth]
+// Delta of the Shape, cut is bigger than tooth, for Whitworth or trapezoidal thread... tooth has to fit in the cut
+ThreadSpaceing=0.125;
+// Cuts a Space between the Lid and the Bottle
+CylinderSpacingCut=0.15;
+// determines the Radius of a Cylinder that will cut from the lid AND/OR the Cylinder of the bottle, aka the Bottle has D=80mm the Lid has a inner diameter of 80mm. CylinderSpacingCut = 3mm, with CylinderSpacingCutBaseCenter = 2mm and Outward, there will 1mm be cut of the Bottle 2mm from the inner cylinder of the Lid so that it will be bigger
+CylinderSpacingCutBaseCenter=0.15;        
+
+// Vector that containes All Values of the Thread
+// HelixParameterVECTOR=[ThreadDeterminator,Direction,ThreadSpaceing,HiggBeeEndtreatment];
+//
+// HelixParameterVECTOR_2=[    Direction,              // Direction of the Thread, The Cuts can be in the Can or in the Lid.
+//                            ThreadDeterminator,     // Decides between a Cut and a Add,
+//                            ThreadSpaceing,         // A parameter for the Cutting Operation to get a sligtly bigger Cut so that the pices will fit to each other
+//                            A,                      // Determines if the ThreadSpacing is applied to make the Cut slightly bigger Just a multiplication by 1 or 0
+//                            HiggBeeEndtreatment     // Number from 0 to 3 decides were a HiggBee Cut is Applied
+//                        
+// ];
+
+// Amount the Helix Rises on each segment.
+ASCENT_STEP=(tan(ASCENT_Deg)*D1_CYLINDER*PI/360);
+echo(ASCENT_STEP,"ASCENT_STEP");
+
+//// sizing printing or print a small part to test the object.
+//DesignStatus="sizing"; // ["sizing","fitting","printing"]
+//// Variables seen by customizer
+//
+//TestSlab_X=50;
+//TestSlab_Y=100;
+//TestSlab_Z=30;
+//
+//TestCylinder_H=35;
+//TestCylinder_D1=25;
+//TestCylinder_D2=45;
+//
+//TestSphere_D=42;
+//
+//module __Customizer_Limit__ () {}  // before these, the variables are usable in the cutomizer
+//shown_by_customizer = false;
+//
+//Invisible=42;
+//TestslabTransl_X=25;
+//TestslabRotate_X=30;
+
 // ==================================
 // = Tuning Variables =
 // ==================================
