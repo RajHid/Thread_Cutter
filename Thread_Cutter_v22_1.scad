@@ -220,7 +220,7 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
             }
         }
         translate([0,0,0]){
-            children(1);
+            //children(1);
             //Can();
         }
         translate([0,0,0]){
@@ -463,7 +463,6 @@ module Helixiterator(HelixParameterVECTOR){
         }
     }
 }
-
 //Iterator(0.125,1,0);
 module Iterator(CUT_SPACING,A,DIRECTION,HiggBeeEndtreatment,ADDITIONAL_END){
     // For each step "j" there will be made two copies of the shape whith a distance of 'ARC_STEP_INCREMENT_DEGREES"
