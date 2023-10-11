@@ -269,11 +269,11 @@ module see_me_in_colourful(){ // iterates the given modules and colors them auto
                                 1-(SINUS_Foo/2+COSIN_Foo/2),
                                 COSIN_Foo],
                                 alpha = 0.0){
-                        translate([70/2,0,0]){
-                            //cube([30,20,150],center=true);
+                        translate([15,15,0]){
+                            cube([30,30,150],center=true);
                         }
                         translate([-50,-50,0]){
-                            cube([100,50,200],center=false);
+                            //cube([100,50,200],center=false);
                         }
                     }
                 }
