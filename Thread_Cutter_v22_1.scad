@@ -11,7 +11,7 @@
 // = Variables =
 // ==================================
 
-// sizing printing or print a small part to test the object.
+// sizing or printing or print a small part to test the object.
 DesignStatus="Tread_Dimension_CUT_Test"; //["sizing","Thread_Object_Innward","sizing_Inn_Cut","Thread_Object_Outward","sizing_Out_Cut","fitting","Tread_Dimension_CUT_Test","printing"]
 //      "sizing": 
 //      "Thread_Object_Innward":
@@ -39,13 +39,18 @@ WandstaerkeDeckel=1.5;
 HoeheDeckel=7;
 TopThickness=0.7;
 
-// ==== Helping ====
+// ==== Fitting helpers ====
 Spacing_Lid_Can_Cylinder=0.1;
 Spacing_Lid_Can_Top=0.1;
 rotation_Diff_Lid_Can=0;
 
-// ==== TootProfile ====
+// ==== Tread ====
+//Choosing a Profile for the trad
 TOOTH_PROFILE="Trapezoid"; //["Trapezoid","SQUARE","TREAD_TOOTH","TOOTH-ON-TOOTH"]
+// Choosing wich direction the tread is faching
+Treaddirection="Outward"; //["Outward","Innward","Tread_on_Tread"]
+
+
 
 
 //Strings="foo"; // [foo, bar, baz]
@@ -169,15 +174,57 @@ echo(ASCENT_STEP,"ASCENT_STEP");
 // ==================================
 // = Customizer Section =
 // ==================================
+
+/* Spicker ... ;-P
+// ==== Can ====        (CANHEIGHT=45,CANDIAMETER=45,CANWALLTHICKNESS=5,CANBOTTOMTHICKNESS=2)
+HoeheFlasche=10;
+Durchmesser_Flasche=25;
+Wandstaerke_Flasche=1.5;
+BottomThickness=1;
+// ==== Lid ====        (LIDHEIGHT=25,CANDIAMETER=45,LIDWALLTHICKNESS=5,LIDTOPTHICKNESS=2,Spacing_Lid_Can_Cylinder=0.5)
+HoeheDeckel=7;
+WandstaerkeDeckel=1.5;
+TopThickness=0.7;
+*/
 if (DesignStatus=="printing"){
-    Main_Assembly(36,76,"false");
+    // the parts gets sprayed out to print them
+    // heigh resolution
+    Main_Assembly(36,76,"false"){
+        Lid(    HoeheDeckel,
+                Durchmesser_Flasche,
+                WandstaerkeDeckel,
+                TopThickness,
+                Spacing_Lid_Can_Cylinder           );
+        Can(    HoeheFlasche,
+                Durchmesser_Flasche,
+                Wandstaerke_Flasche,
+                BottomThickness                    );
+        Helixiterator( 0,
+                        0,
+                        HoeheFlasche-HoeheDeckel+TopThickness+BottomThickness,
+                        ["ADD",
+                        "INN",
+                        ThreadSpaceing,
+                        1,
+                        6*5]       
+                                                    );
+//        Treadmaker(    THREADDIRECTION="INN",
+//                        DETERMINATOR="ADD",
+//                        X=0,
+//                        Y=0,
+//                        Z=HoeheFlasche-HoeheDeckel+TopThickness,
+//                        HiggBeeEndtreatment=0,
+//                        HIGG_BEE=0            );
+    }
+    
 }
 if(DesignStatus=="fitting"){
     intersection(){
         translate([0,0,1]){
             cube([1000,1000,1],center=true);
         }
-        Main_Assembly(16,76,"false");
+        Main_Assembly(16,76,"false"){
+        }
     }
 }
 if (DesignStatus=="sizing"){
@@ -201,14 +248,17 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
         translate([0,0,0]){
             difference(){
                 children(1);
-                children(0);
-                //TEST_OBJECT();
-                translate([25,40,15]){                    
-                    scale([0.4,0.4,0.4]){        
-                        //TEST_CUTCUBE();
+                union(){
+                    //children(0);
+                    //TEST_OBJECT();
+                    children(2);
+//                    translate([25,40,15]){                    
+//                        scale([0.4,0.4,0.4]){        
+//                            //TEST_CUTCUBE();
+//                        }
+//                    }
+                }
             }
-        }
-    }
         }
         translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness+Spacing_Lid_Can_Top]){
             children(0);
@@ -220,7 +270,7 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
             }
         }
         translate([0,0,0]){
-            //children(1);
+            //children(2);
             //Can();
         }
         translate([0,0,0]){
@@ -231,8 +281,10 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
                 echo("CUT_MODULES_RENDERED= ",CUT_MODULES_RENDERED);
             }
         }
+        translate([0,0,0]){
+        }
         union(){
-            
+            //children(2);
         }
         translate([ 0,0,50]){
             difference(){
@@ -257,7 +309,10 @@ module see_me_in_colourful(){ // iterates the given modules and colors them auto
             color(c = [ SINUS_Foo,
                         1-(SINUS_Foo/2+COSIN_Foo/2),
                         COSIN_Foo],
-                        alpha = 0.5){  
+                        alpha = 0.5){
+                if (i>=6){
+                    render(convexity=4){children(i);}
+                    }
                 difference(){
                     render(convexity=10){children(i);} //renders the modules, effect is that inner holes become visible
                     //children(i);
@@ -291,32 +346,33 @@ module see_me_in_colourful(){ // iterates the given modules and colors them auto
 // =--------------------------------- Modules -----------------------------------=
 // ===============================================================================
 //Lid();
-module Lid(){
+module Lid(LIDHEIGHT=25,CANDIAMETER=45,LIDWALLTHICKNESS=5,LIDTOPTHICKNESS=2,Spacing_Lid_Can_Cylinder=0.5){
     translate([0,0,0]){
         difference(){
-            cylinder(h=HoeheDeckel,d=Durchmesser_Flasche+2*WandstaerkeDeckel,$fn=FN_FACETETTES_NUMBER);
-            translate([0,0,-TopThickness]){
-                cylinder(h=HoeheDeckel,d=Durchmesser_Flasche+2*Spacing_Lid_Can_Cylinder,$fn=FN_FACETETTES_NUMBER);
+            cylinder(h=LIDHEIGHT,d=CANDIAMETER+2*LIDWALLTHICKNESS,$fn=FN_FACETETTES_NUMBER);
+            translate([0,0,-LIDTOPTHICKNESS]){
+                cylinder(h=LIDHEIGHT,d=CANDIAMETER+2*Spacing_Lid_Can_Cylinder,$fn=FN_FACETETTES_NUMBER);
             }
         }
     }
 }
 //Can();
-module Can(){
+module Can(CANHEIGHT=45,CANDIAMETER=45,CANWALLTHICKNESS=5,CANBOTTOMTHICKNESS=2){
     difference(){
-        cylinder(h=HoeheFlasche,d=Durchmesser_Flasche,$fn=FN_FACETETTES_NUMBER);
-        translate([0,0,BottomThickness]){
-            cylinder(h=HoeheFlasche,d=Durchmesser_Flasche-2*Wandstaerke_Flasche,$fn=FN_FACETETTES_NUMBER);
+        cylinder(h=CANHEIGHT,d=CANDIAMETER,$fn=FN_FACETETTES_NUMBER);
+        translate([0,0,CANBOTTOMTHICKNESS]){
+            cylinder(h=CANHEIGHT,d=CANDIAMETER-2*CANWALLTHICKNESS,$fn=FN_FACETETTES_NUMBER);
         }
     }
 }
+//Treadmaker("OUT","ADD",-10,-20,-30,1,0);
 module Treadmaker(  THREADDIRECTION="INN",
-                    DETERMINATOR="ADD",
-                    X=-10,
+                    DETERMINATOR="ADD",         //  
+                    X=-10,                      //  Positio
                     Y=-20,
                     Z=-30,
-                    HiggBeeEndtreatment=0,
-                    HIGG_BEE){
+                    HiggBeeEndtreatment=0,      //  higgbee on the ends 0,1,2,3 aka no higgbees,lower has,both has,upper has higgbe  
+                    HIGG_BEE=0){                //  ads lenght to the Spiral, [in degree]
 // ===================================================================================================================================
 //                                                                    Inward
 // ===================================================================================================================================
@@ -406,59 +462,60 @@ module Treadmaker(  THREADDIRECTION="INN",
         }
     }
 }
-
 //Helixiterator(HelixParameterVECTOR);
-module Helixiterator(HelixParameterVECTOR){
+module Helixiterator(X=10,Y=12,Z=0,HelixParameterVECTOR){
 //TEST_HiggBee=0;   // No HiggBee cut on either ends
 //TEST_HiggBee=1;   // HiggBee cut on lower end
 //TEST_HiggBee=2;   // HiggBee cut on both ends
 //TEST_HiggBee=3;   // HiggBee cut on upper end
-    if (HelixParameterVECTOR[1]=="INN"){
-        if (HelixParameterVECTOR[0]=="ADD"){
-            //HelixParameterVECTOR=[1,1, ThreadSpaceing, CylinderSpacingCut, CylinderSpacingCutBaseCenter];
-            Iterator(   HelixParameterVECTOR[2],    // Determines the Spacing of the Cut and Thread, "ThreadSpaceing"
-                        0,                          // Determines wether the Spacing is applied by multipliing HelixParameterVECTOR[2] by 0 or 1
-                        1,                          // Determines the Direction of the Profile (Outward/Inward)                           
-                        HelixParameterVECTOR[3],    // Determines if the the HiggBee cut gets Appied
-                        HelixParameterVECTOR[4]     // if the spiral needs to be longer to cut fully through
-            );
-            for(i=HelixParameterVECTOR){
-                echo(i,"Helixiterator_1");
+    translate([X,Y,Z]){
+        if (HelixParameterVECTOR[1]=="INN"){
+            if (HelixParameterVECTOR[0]=="ADD"){
+                //HelixParameterVECTOR=[1,1, ThreadSpaceing, CylinderSpacingCut, CylinderSpacingCutBaseCenter];
+                Iterator(   HelixParameterVECTOR[2],    // Determines the Spacing of the Cut and Thread, "ThreadSpaceing"
+                            0,                          // Determines wether the Spacing is applied by multipliing HelixParameterVECTOR[2] by 0 or 1
+                            1,                          // Determines the Direction of the Profile (Outward/Inward)                           
+                            HelixParameterVECTOR[3],    // Determines if the the HiggBee cut gets Appied
+                            HelixParameterVECTOR[4]     // if the spiral needs to be longer to cut fully through
+                );
+                for(i=HelixParameterVECTOR){
+                    echo(i,"Helixiterator_1");
+                }
+            }
+            else if(HelixParameterVECTOR[0]=="CUT"){
+                Iterator(   HelixParameterVECTOR[2],    // ...
+                            1,                          // ...
+                            1,                          // ...
+                            HelixParameterVECTOR[3],    // ...
+                            HelixParameterVECTOR[4]     // if the spiral needs to be longer to cut fully through
+                );
+                for(i=HelixParameterVECTOR){
+                    echo(i,"Helixiterator_2");
+                }
             }
         }
-        else if(HelixParameterVECTOR[0]=="CUT"){
-            Iterator(   HelixParameterVECTOR[2],    // ...
-                        1,                          // ...
-                        1,                          // ...
-                        HelixParameterVECTOR[3],    // ...
-                        HelixParameterVECTOR[4]     // if the spiral needs to be longer to cut fully through
-            );
-            for(i=HelixParameterVECTOR){
-                echo(i,"Helixiterator_2");
+        else if(HelixParameterVECTOR[1]=="OUT"){
+            if (HelixParameterVECTOR[0]=="ADD"){
+                Iterator(   HelixParameterVECTOR[2],    // ...
+                            0,                          // ...
+                            0,                          // ...
+                            HelixParameterVECTOR[3],    // ...
+                            HelixParameterVECTOR[4]     // if the spiral needs to be longer to cut fully through
+                );
+                for(i=HelixParameterVECTOR){
+                    echo(i,"Helixiterator_3");
+                }
             }
-        }
-    }
-    else if(HelixParameterVECTOR[1]=="OUT"){
-        if (HelixParameterVECTOR[0]=="ADD"){
-            Iterator(   HelixParameterVECTOR[2],    // ...
-                        0,                          // ...
-                        0,                          // ...
-                        HelixParameterVECTOR[3],    // ...
-                        HelixParameterVECTOR[4]     // if the spiral needs to be longer to cut fully through
-            );
-            for(i=HelixParameterVECTOR){
-                echo(i,"Helixiterator_3");
-            }
-        }
-        else if(HelixParameterVECTOR[0]=="CUT"){
-            Iterator(   HelixParameterVECTOR[2],    // ...
-                        1,                          // ...
-                        0,                          // ...
-                        HelixParameterVECTOR[3],    // ...
-                        HelixParameterVECTOR[4]     // if the spiral needs to be longer to cut fully through
-            );
-            for(i=HelixParameterVECTOR){
-                echo(i,"Helixiterator_4");
+            else if(HelixParameterVECTOR[0]=="CUT"){
+                Iterator(   HelixParameterVECTOR[2],    // ...
+                            1,                          // ...
+                            0,                          // ...
+                            HelixParameterVECTOR[3],    // ...
+                            HelixParameterVECTOR[4]     // if the spiral needs to be longer to cut fully through
+                );
+                for(i=HelixParameterVECTOR){
+                    echo(i,"Helixiterator_4");
+                }
             }
         }
     }
