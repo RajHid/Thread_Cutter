@@ -208,6 +208,15 @@ if (DesignStatus=="printing"){
                         1,
                         6*5]       
                                                     );
+        Helixiterator( 0,
+                        0,
+                        HoeheFlasche-HoeheDeckel+TopThickness+BottomThickness,
+                        ["CUT",
+                        "INN",
+                        ThreadSpaceing,
+                        1,
+                        6*5]       
+                                                    );
 //        Treadmaker(    THREADDIRECTION="INN",
 //                        DETERMINATOR="ADD",
 //                        X=0,
@@ -251,7 +260,7 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
                 union(){
                     //children(0);
                     //TEST_OBJECT();
-                    children(2);
+                    children(3);
 //                    translate([25,40,15]){                    
 //                        scale([0.4,0.4,0.4]){        
 //                            //TEST_CUTCUBE();
@@ -261,7 +270,7 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
             }
         }
         translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness+Spacing_Lid_Can_Top]){
-            children(0);
+            //children(0);
             //Lid();
         }        
         translate([0,0,0]){
@@ -270,7 +279,7 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
             }
         }
         translate([0,0,0]){
-            //children(2);
+            //children(3);
             //Can();
         }
         translate([0,0,0]){
@@ -284,7 +293,7 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
         translate([0,0,0]){
         }
         union(){
-            //children(2);
+            children(2);
         }
         translate([ 0,0,50]){
             difference(){
