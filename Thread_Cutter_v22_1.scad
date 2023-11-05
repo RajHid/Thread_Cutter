@@ -189,7 +189,7 @@ TopThickness=0.7;
 if (DesignStatus=="printing"){
     // the parts gets sprayed out to print them
     // heigh resolution
-    Main_Assembly(36,76,"false"){
+    Main_Assembly(36,76,"false","false"){
         Lid(    HoeheDeckel,
                 Durchmesser_Flasche,
                 WandstaerkeDeckel,
@@ -237,7 +237,7 @@ if(DesignStatus=="fitting"){
     }
 }
 if (DesignStatus=="sizing"){
-    Main_Assembly(16,36,"true"){
+    Main_Assembly(16,76,"true"){
         Lid();
         Can();
         sphere(r=12);
@@ -250,10 +250,11 @@ if (DesignStatus=="sizing"){
 // LOW_RESOLUTION: low reaulution value to speed up preview
 // HIGH_RESOLUTION: high resolution value for rendering the .stl
 // CUT_MODULES_RENDERED: decides if the cuttingmodules get renderred to see them. use cuttingmodules twice one time within the final part to cut and one time to just schow it.
+// CUTTING_IS_SET: true or false to decide if the cutings to show a cross section gets applied
 // Main_Assembly(12,76,true);
-module Main_Assembly(LOW_RESOLUTION=12,HIGH_RESOLUTION=36,CUT_MODULES_RENDERED){
-$fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) set to 12, in Reder (F6) is set to 72
-    see_me_in_colourful(){
+module Main_Assembly(LOW_RESOLUTION=12,HIGH_RESOLUTION=36,CUT_MODULES_RENDERED,CUTTING_IS_SET){
+$fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) set to 12, in Reder (F6) is set to 76
+    see_me_in_colourful(CUTTING_IS_SET){
         translate([0,0,0]){
             difference(){
                 children(1);
@@ -285,6 +286,7 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
         translate([0,0,0]){
             if(CUT_MODULES_RENDERED=="true"){
                 //TEST_CUTCYLINDER();
+                children(2);
             }
             else{
                 echo("CUT_MODULES_RENDERED= ",CUT_MODULES_RENDERED);
@@ -293,7 +295,7 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
         translate([0,0,0]){
         }
         union(){
-            children(2);
+            
         }
         translate([ 0,0,50]){
             difference(){
@@ -306,7 +308,7 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
 // ===============================================================================
 // =----- Module to help coloring different modules to make it easier 
 // ===============================================================================
-module see_me_in_colourful(){ // iterates the given modules and colors them automaticly by setting values using trigonometric funktions
+module see_me_in_colourful(CUTTING_IS_SET="false"){ // iterates the given modules and colors them automaticly by setting values using trigonometric funktions
     translate([0,0,0]){
         for(i=[0:1:$children-1]){
             a=255;
@@ -332,17 +334,30 @@ module see_me_in_colourful(){ // iterates the given modules and colors them auto
                     color(c = [ SINUS_Foo,
                                 1-(SINUS_Foo/2+COSIN_Foo/2),
                                 COSIN_Foo],
-                                alpha = 0.0){
-                        translate([15,15,0]){
-                            cube([30,30,150],center=true);
+                                alpha = 0.0)                    {
+                        if(CUTTING_IS_SET=="true"){
+                            translate([15,15,0]){
+                                cube([30,30,150],center=true);
+                            }
+                            translate([0,0,10]){
+                                //TILT_CUT(ASCENT_Deg,0,40,30);
+                            }
+                            translate([-50,-50,0]){
+                                //cube([100,50,200],center=false);
+                            }
                         }
-                        translate([-50,-50,0]){
-                            //cube([100,50,200],center=false);
-                        }
+                        else{echo("Crosscutting=",CUTTING_IS_SET);}
                     }
                 }
             }
         }
+    }
+}
+//TILT_CUT(TILT_ANGLE=10,ROT_ANGLE_ALIGN=0,HEIGHT=50,DIAMETER=35);
+module TILT_CUT(TILT_ANGLE=80,ROT_ANGLE_ALIGN=-90,HEIGHT=50,DIAMETER=35){
+    rotate([TILT_ANGLE,0,ROT_ANGLE_ALIGN]){
+        cylinder(h=HEIGHT,d=DIAMETER);
+    
     }
 }
 // ===============================================================================
