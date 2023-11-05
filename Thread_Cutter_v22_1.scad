@@ -12,7 +12,7 @@
 // ==================================
 
 // sizing or printing or print a small part to test the object.
-DesignStatus="Tread_Dimension_CUT_Test"; //["sizing","Thread_Object_Innward","sizing_Inn_Cut","Thread_Object_Outward","sizing_Out_Cut","fitting","Tread_Dimension_CUT_Test","printing"]
+DesignStatus="Tread_Dimension_CUT_Test";//["sizing","Thread_Object_Innward","sizing_Inn_Cut","Thread_Object_Outward","sizing_Out_Cut","fitting","Tread_Dimension_CUT_Test","printing","coloring"]
 //      "sizing": 
 //      "Thread_Object_Innward":
 //      "sizing_Inn_Cut":
@@ -30,19 +30,19 @@ DesignStatus="Tread_Dimension_CUT_Test"; //["sizing","Thread_Object_Innward","si
 
 
 // ==== Can ====
-Durchmesser_Flasche=25;
-HoeheFlasche=10;
-Wandstaerke_Flasche=1.5;
-BottomThickness=1;
+Durchmesser_Flasche=25.0;
+HoeheFlasche=10.0;
+Wandstaerke_Flasche=1.50;
+BottomThickness=1.00;
 // ==== Lid ====
-WandstaerkeDeckel=1.5;
-HoeheDeckel=7;
-TopThickness=0.7;
+WandstaerkeDeckel=1.50;
+HoeheDeckel=7.0;
+TopThickness=0.70;
 
 // ==== Fitting helpers ====
-Spacing_Lid_Can_Cylinder=0.1;
-Spacing_Lid_Can_Top=0.1;
-rotation_Diff_Lid_Can=0;
+Spacing_Lid_Can_Cylinder=0.10;
+Spacing_Lid_Can_Top=0.10;
+rotation_Diff_Lid_Can=0.0;
 
 // ==== Tread ====
 //Choosing a Profile for the trad
@@ -66,7 +66,7 @@ echo("H1_CYLINDER",H1_CYLINDER);
 // === Helix Parameters ===
 
 // Degrees the helix ascends
-ASCENT_Deg=12;
+ASCENT_Deg=12.0;
 // Number of Threads
 THREAD_COUNT=5;
 // Degrees the helixsegments the helix is made of take in each step. aka 1° will get you 360 segments the helix is made of.
@@ -189,7 +189,86 @@ TopThickness=0.7;
 if (DesignStatus=="printing"){
     // the parts gets sprayed out to print them
     // heigh resolution
-    Main_Assembly(36,76,"true","true"){
+    difference(){
+        Main_Assembly(  36,
+                        76,
+                        "false",        // showing ("false") or cutting the tread
+                        "false"){
+        //difference(){
+            //union(){
+                translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness]){
+                    Lid(    HoeheDeckel,//                                                                          Child [0]
+                            Durchmesser_Flasche,
+                            WandstaerkeDeckel,
+                            TopThickness,
+                            Spacing_Lid_Can_Cylinder           );
+                }
+                Can(    HoeheFlasche,//                                                                         Child [1]
+                        Durchmesser_Flasche,
+                        Wandstaerke_Flasche,
+                        BottomThickness                    );
+                Helixiterator( 0,//                                                                             Child [2]
+                                0,
+                                HoeheFlasche-HoeheDeckel+TopThickness+BottomThickness,
+                                ["ADD",
+                                "INN",
+                                ThreadSpaceing,
+                                1,
+                                6*5]       
+                                                            );
+                Helixiterator( 0,//                                                                             Child [3]
+                                0,
+                                HoeheFlasche-HoeheDeckel+TopThickness+BottomThickness,
+                                ["CUT",
+                                "INN",
+                                ThreadSpaceing,
+                                1,
+                                6*5]       
+                                                            );
+                Top_Spaching_Difference_Cut(            HoeheFlasche,
+                                                        Durchmesser_Flasche,
+                                                        Spacing_Lid_Can_Top,
+                                                        Spacing_Lid_Can_Cylinder,
+                                                        36,76); //                                          Child [4]
+                #Can_to_Lid_Spaching_Difference_Cut(     HoeheFlasche,      //                                   Child [5]
+                                                        Durchmesser_Flasche,     // CANDIAMETER
+                                                        Wandstaerke_Flasche,      // CANWALLTHICKNESS
+                                                        Spacing_Lid_Can_Cylinder,   // SPACING_LID_CAN_CYLINDER
+                                                        H1_CYLINDER,    // heigt of the Helix!
+                                                        36,76); // $fn Resolution See vs final Render
+        //        Treadmaker(    THREADDIRECTION="INN",
+        //                        DETERMINATOR="ADD",
+        //                        X=0,
+        //                        Y=0,
+        //                        Z=HoeheFlasche-HoeheDeckel+TopThickness,
+        //                        HiggBeeEndtreatment=0,
+        //                        HIGG_BEE=0            );
+            //}
+        }
+        translate([15,15,0]){
+            //cube([30,30,150],center=true);
+        }
+    }    
+}
+if(DesignStatus=="fitting"){
+    intersection(){
+        translate([0,0,1]){
+            cube([1000,1000,1],center=true);
+        }
+        Main_Assembly(16,76,"false"){
+        }
+    }
+}
+if (DesignStatus=="sizing"){
+    Main_Assembly(16,76,"true"){
+        Lid();
+        Can();
+        sphere(r=12);
+        cube(22,center=true);
+        }
+}
+if (DesignStatus=="coloring"){
+    Deutsches_Welle_Polen(36,76){
         translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness]){
             Lid(    HoeheDeckel,//                                                                          Child [0]
                     Durchmesser_Flasche,
@@ -201,6 +280,7 @@ if (DesignStatus=="printing"){
                 Durchmesser_Flasche,
                 Wandstaerke_Flasche,
                 BottomThickness                    );
+        
         Helixiterator( 0,//                                                                             Child [2]
                         0,
                         HoeheFlasche-HoeheDeckel+TopThickness+BottomThickness,
@@ -225,33 +305,10 @@ if (DesignStatus=="printing"){
                                                 //5,      // CANWALLTHICKNESS
                                                 0.25,   // SPACING_LID_CAN_CYLINDER
                                                 H1_CYLINDER,    // heigt of the Helix!
-                                                16,76); // $fn Resolution See vs final Render
-//        Treadmaker(    THREADDIRECTION="INN",
-//                        DETERMINATOR="ADD",
-//                        X=0,
-//                        Y=0,
-//                        Z=HoeheFlasche-HoeheDeckel+TopThickness,
-//                        HiggBeeEndtreatment=0,
-//                        HIGG_BEE=0            );
+                                                16,76);
+        //sphere(r=12);
+        //cube(22,center=true);
     }
-    
-}
-if(DesignStatus=="fitting"){
-    intersection(){
-        translate([0,0,1]){
-            cube([1000,1000,1],center=true);
-        }
-        Main_Assembly(16,76,"false"){
-        }
-    }
-}
-if (DesignStatus=="sizing"){
-    Main_Assembly(16,76,"true"){
-        Lid();
-        Can();
-        sphere(r=12);
-        cube(22,center=true);
-        }
 }
 // ==================================
 // = MAINASSEMBLY =
@@ -263,7 +320,9 @@ if (DesignStatus=="sizing"){
 // Main_Assembly(12,76,true);
 module Main_Assembly(LOW_RESOLUTION=12,HIGH_RESOLUTION=36,CUT_MODULES_RENDERED,CUTTING_IS_SET){
 $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) set to 12, in Reder (F6) is set to 76
-    see_me_in_colourful(CUTTING_IS_SET){
+// === makes ist bunt
+    Deutsches_Welle_Polen(){
+//    see_me_in_colourful(CUTTING_IS_SET){
         translate([0,0,0]){
             difference(){
                 children(1);
@@ -284,33 +343,46 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
                 children(0);
                 union(){
                     children(4);
-                    children(5); 
+                    //children(5); 
+                }
+                union(){
+                    children(5);
                 }
             }
-            //Lid();
+            difference(){
+                children(2);
+                //  Upper Cut of Thread helix
+                translate([0,0,HoeheFlasche+Spacing_Lid_Can_Top]){
+                    cylinder(h=H1_CYLINDER,d=60);
+                }
+                //  Lower Cut of Thread helix
+                translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness+Spacing_Lid_Can_Top-H1_CYLINDER]){ 
+                    cylinder(h=H1_CYLINDER,d=60);
+                }
+            }
         }
         translate([0,0,0]){
             difference(){
-                //TEST_SPHERE();
             }
         }
         translate([0,0,0]){
             //children(3);
             //Can();
         }
-        translate([0,0,0]){
-            if(CUT_MODULES_RENDERED=="true"){
-                //TEST_CUTCYLINDER();
-                children(2);
-                union(){
-                    children(4);
-                    children(5); 
+        if(CUT_MODULES_RENDERED=="true"){
+            translate([0,0,0]){
+                children(2); 
                 }
+            translate([0,0,0]){
+                children(4);
             }
-            else{
-                echo("CUT_MODULES_RENDERED= ",CUT_MODULES_RENDERED);
+            translate([0,0,0]){
+                children(5);
             }
         }
+        else{
+                echo("CUT_MODULES_RENDERED= ",CUT_MODULES_RENDERED);
+            }
         translate([0,0,0]){
         }
         union(){
@@ -340,11 +412,11 @@ module see_me_in_colourful(CUTTING_IS_SET="false"){ // iterates the given module
                         1-(SINUS_Foo/2+COSIN_Foo/2),
                         COSIN_Foo],
                         alpha = 0.5){
-                if (i>=6){
-                    render(convexity=4){children(i);}
-                    }
+//                if (i>=6){
+//                    render(convexity=4){children(i);}
+//                    }
                 difference(){
-                    render(convexity=10){children(i);} //renders the modules, effect is that inner holes become visible
+                    render(convexity=10){children(i);} //renders the modules, effect is that inner caveties become visible
                     //children(i);
                     translate([70/2,0,0]){
                         //cube([80,90,150],center=true);
@@ -369,6 +441,25 @@ module see_me_in_colourful(CUTTING_IS_SET="false"){ // iterates the given module
                     }
                 }
             }
+        }
+    }
+}
+module Deutsches_Welle_Polen(LOW_RESOLUTION=36,HIGH_RESOLUTION=76){ // In Farbe und Bunt
+$fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) set to 12, in Reder (F6) is set to 76
+// cutting Modules
+//
+    for(i=[0:1:$children-1]){    
+        a=255;
+        b=50;       // cuts away the dark colors to prevent bad visual contrast to backgound
+        k_farbabstand=((a-b)/$children); // $children provides the index of the used child, Each child gets a equidistat color to each other
+        Farbe=((k_farbabstand*i)/255);
+        SINUS_Foo=0.5+(sin(((360/(a-b))*k_farbabstand)*(i+1)))/2;
+        COSIN_Foo=0.5+(cos(((360/(a-b))*k_farbabstand)*(i+1)))/2;
+        color(c = [ SINUS_Foo,
+                    1-(SINUS_Foo/2+COSIN_Foo/2),
+                    COSIN_Foo],
+                    alpha = 0.5){
+            render(convexity=10){children(i);} //renders the modules, effect is that inner caveties become visible
         }
     }
 }
@@ -638,15 +729,15 @@ K=0;
 module Top_Spaching_Difference_Cut(CANHEIGHT=45,CANDIAMETER=45,TOP_SPACING_CUT_HIGHT=1.7,SPACING_LID_CAN_CYLINDER=0.77,LOW_RESOLUTION=16, HIGH_RESOLUTION=76){
 $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) set to 12, in Reder (F6) is set to 76
 translate([0,0,CANHEIGHT]){
-    cylinder(h=TOP_SPACING_CUT_HIGHT,d=CANDIAMETER+2*SPACING_LID_CAN_CYLINDER);
+    cylinder(h=TOP_SPACING_CUT_HIGHT,d=CANDIAMETER+SPACING_LID_CAN_CYLINDER);
     }    
 }
-//Can_to_Lid_Spaching_Difference_Cut(5,25,0.25,9,16,76); // $fn Resolution See vs final Render
-module Can_to_Lid_Spaching_Difference_Cut(CANHEIGHT=45,CANDIAMETER=45,SPACING_LID_CAN_CYLINDER=0.77,HEIGT_OF_HELIX=9,LOW_RESOLUTION=16, HIGH_RESOLUTION=76){
+//Can_to_Lid_Spaching_Difference_Cut(5,25,5,0.25,9,16,76); // $fn Resolution See vs final Render
+module Can_to_Lid_Spaching_Difference_Cut(CANHEIGHT=45,CANDIAMETER=45,CANWALLTHICKNESS=5,SPACING_LID_CAN_CYLINDER=0.77,HEIGT_OF_HELIX=9,LOW_RESOLUTION=16, HIGH_RESOLUTION=76){
 $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) set to 12, in Reder (F6) is set to 76
 translate([0,0,CANHEIGHT-HEIGT_OF_HELIX]){
     difference(){
-        cylinder(h=HEIGT_OF_HELIX,d=CANDIAMETER+2*SPACING_LID_CAN_CYLINDER);
+        cylinder(h=HEIGT_OF_HELIX,d=CANDIAMETER+SPACING_LID_CAN_CYLINDER);
         cylinder(h=HEIGT_OF_HELIX,d=CANDIAMETER);
         }
     }
