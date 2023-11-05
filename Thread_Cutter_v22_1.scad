@@ -68,9 +68,9 @@ echo("H1_CYLINDER",H1_CYLINDER);
 // Degrees the helix ascends
 ASCENT_Deg=12;
 // Number of Threads
-THREAD_COUNT=3;
+THREAD_COUNT=5;
 // Degrees the helixsegments the helix is made of take in each step. aka 1° will get you 360 segments the helix is made of.
-ARC_STEP_INCREMENT_DEGREES=5;// Size of one subobject aka the Arc lenght of the Extrusion of the Treadprofile, the wohle Thtread gets assembled by putting them together step by step
+ARC_STEP_INCREMENT_DEGREES=360/76;// Size of one subobject aka the Arc lenght of the Extrusion of the Treadprofile, the wohle Thtread gets assembled by putting them together step by step
 
 // Length of the Higgbee Cut is determined by x times Arc ARC_STEP_INCREMENT_DEGREES (aka 6° if 1°)
 HigbeeIncrementrs=6;
@@ -116,7 +116,7 @@ MAX_DEGREE_END=round(360*(Tooth_Profile_Height/((D1_CYLINDER*PI)*tan(ASCENT_Deg)
 echo("MAX_DEGREE_END",MAX_DEGREE_END);
 // Parameter that provides the correct amount of degrees the Helix Rotates to met the Height of a bottle cap, aka the helix fits in the height of the bottle cap
 
-MAX_DEGREE=round(360*(H1_CYLINDER/((D1_CYLINDER*PI)*tan(ASCENT_Deg)))); // --> Gets used in iterator now due to need of parametering the Start and end of the Spiral, Spiral needs to be longer to dutt fully trough
+MAX_DEGREE=round(360*(H1_CYLINDER/((D1_CYLINDER*PI)*tan(ASCENT_Deg)))); // --> Gets used in iterator now due to need of parametering the Start and end of the Spiral, Spiral needs to be longer to cut fully trough
 echo("MAX_DEGREE",MAX_DEGREE);
 
 // Cutter or Actual Tread ("Cut" slith vs "ADD" tooth)
@@ -189,17 +189,19 @@ TopThickness=0.7;
 if (DesignStatus=="printing"){
     // the parts gets sprayed out to print them
     // heigh resolution
-    Main_Assembly(36,76,"false","false"){
-        Lid(    HoeheDeckel,
-                Durchmesser_Flasche,
-                WandstaerkeDeckel,
-                TopThickness,
-                Spacing_Lid_Can_Cylinder           );
-        Can(    HoeheFlasche,
+    Main_Assembly(36,76,"true","true"){
+        translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness]){
+            Lid(    HoeheDeckel,//                                                                          Child [0]
+                    Durchmesser_Flasche,
+                    WandstaerkeDeckel,
+                    TopThickness,
+                    Spacing_Lid_Can_Cylinder           );
+        }
+        Can(    HoeheFlasche,//                                                                         Child [1]
                 Durchmesser_Flasche,
                 Wandstaerke_Flasche,
                 BottomThickness                    );
-        Helixiterator( 0,
+        Helixiterator( 0,//                                                                             Child [2]
                         0,
                         HoeheFlasche-HoeheDeckel+TopThickness+BottomThickness,
                         ["ADD",
@@ -208,7 +210,7 @@ if (DesignStatus=="printing"){
                         1,
                         6*5]       
                                                     );
-        Helixiterator( 0,
+        Helixiterator( 0,//                                                                             Child [3]
                         0,
                         HoeheFlasche-HoeheDeckel+TopThickness+BottomThickness,
                         ["CUT",
@@ -217,6 +219,13 @@ if (DesignStatus=="printing"){
                         1,
                         6*5]       
                                                     );
+        Top_Spaching_Difference_Cut(10,25,0.3,0.67,36,76); //                                          Child [4]
+        Can_to_Lid_Spaching_Difference_Cut(    HoeheFlasche,      //                                   Child [5]
+                                                25,     // CANDIAMETER
+                                                //5,      // CANWALLTHICKNESS
+                                                0.25,   // SPACING_LID_CAN_CYLINDER
+                                                H1_CYLINDER,    // heigt of the Helix!
+                                                16,76); // $fn Resolution See vs final Render
 //        Treadmaker(    THREADDIRECTION="INN",
 //                        DETERMINATOR="ADD",
 //                        X=0,
@@ -270,10 +279,16 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
                 }
             }
         }
-        translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness+Spacing_Lid_Can_Top]){
-            //children(0);
+        translate([0,0,0]){
+            difference(){
+                children(0);
+                union(){
+                    children(4);
+                    children(5); 
+                }
+            }
             //Lid();
-        }        
+        }
         translate([0,0,0]){
             difference(){
                 //TEST_SPHERE();
@@ -287,6 +302,10 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
             if(CUT_MODULES_RENDERED=="true"){
                 //TEST_CUTCYLINDER();
                 children(2);
+                union(){
+                    children(4);
+                    children(5); 
+                }
             }
             else{
                 echo("CUT_MODULES_RENDERED= ",CUT_MODULES_RENDERED);
@@ -363,32 +382,32 @@ module TILT_CUT(TILT_ANGLE=80,ROT_ANGLE_ALIGN=-90,HEIGHT=50,DIAMETER=35){
 // ===============================================================================
 // =--------------------------------- Enviroment Modules ------------------------=
 // ===============================================================================
-// Modules that resembles the Enviroment aka the helmet where to atach a camera mount
+// Modules that resembles the Enviroment aka the helmet where to atach a camera mount or the Object the Tread gets applied to
 
-
-// ===============================================================================
-// =--------------------------------- Modules -----------------------------------=
-// ===============================================================================
 //Lid();
 module Lid(LIDHEIGHT=25,CANDIAMETER=45,LIDWALLTHICKNESS=5,LIDTOPTHICKNESS=2,Spacing_Lid_Can_Cylinder=0.5){
     translate([0,0,0]){
         difference(){
-            cylinder(h=LIDHEIGHT,d=CANDIAMETER+2*LIDWALLTHICKNESS,$fn=FN_FACETETTES_NUMBER);
+            cylinder(h=LIDHEIGHT,d=CANDIAMETER+2*LIDWALLTHICKNESS);
             translate([0,0,-LIDTOPTHICKNESS]){
-                cylinder(h=LIDHEIGHT,d=CANDIAMETER+2*Spacing_Lid_Can_Cylinder,$fn=FN_FACETETTES_NUMBER);
+                cylinder(h=LIDHEIGHT,d=CANDIAMETER); 
             }
         }
     }
 }
 //Can();
-module Can(CANHEIGHT=45,CANDIAMETER=45,CANWALLTHICKNESS=5,CANBOTTOMTHICKNESS=2){
+module Can(CANHEIGHT=45,CANDIAMETER=45,CANWALLTHICKNESS=5,CANBOTTOMTHICKNESS=2,){
     difference(){
-        cylinder(h=CANHEIGHT,d=CANDIAMETER,$fn=FN_FACETETTES_NUMBER);
+        cylinder(h=CANHEIGHT,d=CANDIAMETER);
         translate([0,0,CANBOTTOMTHICKNESS]){
-            cylinder(h=CANHEIGHT,d=CANDIAMETER-2*CANWALLTHICKNESS,$fn=FN_FACETETTES_NUMBER);
+            cylinder(h=CANHEIGHT,d=CANDIAMETER-2*CANWALLTHICKNESS);
         }
     }
 }
+// ===============================================================================
+// =--------------------------------- Modules -----------------------------------=
+// ===============================================================================
+
 //Treadmaker("OUT","ADD",-10,-20,-30,1,0);
 module Treadmaker(  THREADDIRECTION="INN",
                     DETERMINATOR="ADD",         //  
@@ -615,6 +634,31 @@ K=0;
         }
     }
 }
+//Top_Spaching_Difference_Cut(10,25,0.3,0.67,36,76);
+module Top_Spaching_Difference_Cut(CANHEIGHT=45,CANDIAMETER=45,TOP_SPACING_CUT_HIGHT=1.7,SPACING_LID_CAN_CYLINDER=0.77,LOW_RESOLUTION=16, HIGH_RESOLUTION=76){
+$fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) set to 12, in Reder (F6) is set to 76
+translate([0,0,CANHEIGHT]){
+    cylinder(h=TOP_SPACING_CUT_HIGHT,d=CANDIAMETER+2*SPACING_LID_CAN_CYLINDER);
+    }    
+}
+//Can_to_Lid_Spaching_Difference_Cut(5,25,0.25,9,16,76); // $fn Resolution See vs final Render
+module Can_to_Lid_Spaching_Difference_Cut(CANHEIGHT=45,CANDIAMETER=45,SPACING_LID_CAN_CYLINDER=0.77,HEIGT_OF_HELIX=9,LOW_RESOLUTION=16, HIGH_RESOLUTION=76){
+$fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) set to 12, in Reder (F6) is set to 76
+translate([0,0,CANHEIGHT-HEIGT_OF_HELIX]){
+    difference(){
+        cylinder(h=HEIGT_OF_HELIX,d=CANDIAMETER+2*SPACING_LID_CAN_CYLINDER);
+        cylinder(h=HEIGT_OF_HELIX,d=CANDIAMETER);
+        }
+    }
+}
+//Bottom_Spaching_Difference_Cut();
+module Bottom_Spaching_Difference_Cut(){
+$fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) set to 12, in Reder (F6) is set to 76
+translate([0,0,CANHEIGHT]){
+    cylinder(h=TOP_SPACING_CUT_HIGHT,d=CANDIAMETER+2*SPACING_LID_CAN_CYLINDER);
+    }
+}
+
 //3D_Base_Shape(0,0){Tooth_Profile(TOOTH_PROFILE);}
 // Creates the 3D-Object from the Toot_Profile, its a very thin Object because the followiung hull-Funktion dosent work with a 2D-Object
 module 3D_Base_Shape(DELTA,DIRECTION){
