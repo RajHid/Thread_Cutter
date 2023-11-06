@@ -321,7 +321,7 @@ if (DesignStatus=="coloring"){
 module Main_Assembly(LOW_RESOLUTION=12,HIGH_RESOLUTION=36,CUT_MODULES_RENDERED,CUTTING_IS_SET){
 $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) set to 12, in Reder (F6) is set to 76
 // === makes ist bunt
-    Deutsches_Welle_Polen(){
+    Deutsches_Welle_Polen(16,76,255/2){
 //    see_me_in_colourful(CUTTING_IS_SET){
         translate([0,0,0]){
             difference(){
@@ -338,37 +338,29 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
                 }
             }
         }
-        translate([0,0,0]){
-            difference(){
-                children(0);
-                union(){
-                    children(4);
-                    //children(5); 
-                }
-                union(){
-                    children(5);
-                }
+        difference(){
+            children(0);
+            union(){
+                children(4);
+                //children(5); 
             }
-            difference(){
-                children(2);
-                //  Upper Cut of Thread helix
-                translate([0,0,HoeheFlasche+Spacing_Lid_Can_Top]){
-                    cylinder(h=H1_CYLINDER,d=60);
-                }
-                //  Lower Cut of Thread helix
-                translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness+Spacing_Lid_Can_Top-H1_CYLINDER]){ 
-                    cylinder(h=H1_CYLINDER,d=60);
-                }
+            union(){
+                children(5);
             }
         }
-        translate([0,0,0]){
-            difference(){
+        difference(){
+            children(2);
+            //  Upper Cut of Thread helix
+            translate([0,0,HoeheFlasche+Spacing_Lid_Can_Top]){
+                cylinder(h=H1_CYLINDER,d=60);
+            }
+            //  Lower Cut of Thread helix
+            translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness+Spacing_Lid_Can_Top-H1_CYLINDER]){ 
+                cylinder(h=H1_CYLINDER,d=60);
             }
         }
-        translate([0,0,0]){
-            //children(3);
-            //Can();
-        }
+    }
+    Deutsches_Welle_Polen(16,76,255/3){
         if(CUT_MODULES_RENDERED=="true"){
             translate([0,0,0]){
                 children(2); 
@@ -444,15 +436,15 @@ module see_me_in_colourful(CUTTING_IS_SET="false"){ // iterates the given module
         }
     }
 }
-module Deutsches_Welle_Polen(LOW_RESOLUTION=36,HIGH_RESOLUTION=76){ // In Farbe und Bunt
+module Deutsches_Welle_Polen(LOW_RESOLUTION=36,HIGH_RESOLUTION=76,COLORSTART){ // In Farbe und Bunt
 $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) set to 12, in Reder (F6) is set to 76
 // cutting Modules
 //
     for(i=[0:1:$children-1]){    
         a=255;
         b=50;       // cuts away the dark colors to prevent bad visual contrast to backgound
-        k_farbabstand=((a-b)/$children); // $children provides the index of the used child, Each child gets a equidistat color to each other
-        Farbe=((k_farbabstand*i)/255);
+        k_farbabstand=((a-b)/$children)+COLORSTART; // $children provides the index of the used child, Each child gets a equidistat color to each other
+        //Farbe=((k_farbabstand*i)/255);
         SINUS_Foo=0.5+(sin(((360/(a-b))*k_farbabstand)*(i+1)))/2;
         COSIN_Foo=0.5+(cos(((360/(a-b))*k_farbabstand)*(i+1)))/2;
         color(c = [ SINUS_Foo,
