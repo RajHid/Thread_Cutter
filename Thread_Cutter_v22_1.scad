@@ -294,7 +294,7 @@ if (DesignStatus=="printing_2"){
                                                         Spacing_Lid_Can_Top,
                                                         Spacing_Lid_Can_Cylinder,
                                                         36,76); //                                          Child [4]
-                #Can_to_Lid_Spaching_Difference_Cut(     HoeheFlasche,      //                                   Child [5]
+                Can_to_Lid_Spaching_Difference_Cut(     HoeheFlasche,      //                                   Child [5]
                                                         Durchmesser_Flasche,     // CANDIAMETER
                                                         Wandstaerke_Flasche,      // CANWALLTHICKNESS
                                                         Spacing_Lid_Can_Cylinder,   // SPACING_LID_CAN_CYLINDER
@@ -463,7 +463,7 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
 module Main_Assembly_2(LOW_RESOLUTION=12,HIGH_RESOLUTION=36,CUT_MODULES_RENDERED,CUTTING_IS_SET){
 $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) set to 12, in Reder (F6) is set to 76
 // === makes ist bunt
-    Collor_it_Ruffly(1/255*160,1/255*176,1/255*200){
+    Collor_it_Ruffly(1/255*160,1/255*176,1/255*200,true){
     //    see_me_in_colourful(CUTTING_IS_SET){
         translate([0,0,0]){
             difference(){
@@ -471,7 +471,9 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
                 union(){
                     //children(0);
                     //TEST_OBJECT();
-                    render(convexity=10){children(3);}
+                    !Collor_it_Ruffly(1/255*60,1/255*76,1/255*20,true){
+                        render(convexity=10){children(3);}
+                    }
     //                    translate([25,40,15]){                    
     //                        scale([0.4,0.4,0.4]){        
     //                            //TEST_CUTCUBE();
@@ -481,7 +483,7 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
             }
         }
     }
-    Collor_it_Ruffly(1/255*160,1/255*176,1/255*100){
+    Collor_it_Ruffly(1/255*160,1/255*176,1/255*100,true){
         difference(){
             render(convexity=10){children(0);}
             union(){
@@ -504,7 +506,7 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
             }
         }
     }
-    Collor_it_Ruffly(1/255*60,1/255*176,1/255*100){
+    Collor_it_Ruffly(1/255*60,1/255*176,1/255*100,true){
         if(CUT_MODULES_RENDERED=="true"){
             translate([0,0,0]){
                 render(convexity=10){children(2);} 
@@ -600,11 +602,20 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
         }
     }
 }
-module Collor_it_Ruffly(RED=124,GRN=124,BLU=124){
-    color(c=[   RED,
-                GRN,
-                BLU  ], alpha=0.5 ){
-        render(convexity=10){children();}
+module Collor_it_Ruffly(RED=124,GRN=124,BLU=124,CUT_It=false){
+    difference(){
+        color(c=[   RED,
+                    GRN,
+                    BLU  ], alpha=0.5 ){
+            render(convexity=10){children();}
+        }
+        if (CUT_It==true){
+            cube([50,50,50]);
+            echo("Sectional modell",CUT_It);
+        }
+        else{
+            echo("Sectional modell",CUT_It);
+        }
     }
 }
 //TILT_CUT(TILT_ANGLE=10,ROT_ANGLE_ALIGN=0,HEIGHT=50,DIAMETER=35);
