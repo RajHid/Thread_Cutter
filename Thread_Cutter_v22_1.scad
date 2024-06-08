@@ -50,18 +50,13 @@ TOOTH_PROFILE="Trapezoid"; //["Trapezoid","SQUARE","TREAD_TOOTH","TOOTH-ON-TOOTH
 // Choosing wich direction the tread is faching
 Treaddirection="Outward"; //["Outward","Innward","Tread_on_Tread"]
 
-
-
-
 //Strings="foo"; // [foo, bar, baz]
-
 
 D1_CYLINDER=Durchmesser_Flasche;
 H1_CYLINDER=HoeheDeckel-TopThickness;
 
 echo("D1_CYLINDER",D1_CYLINDER);
 echo("H1_CYLINDER",H1_CYLINDER);
-
 
 // === Helix Parameters ===
 
@@ -75,7 +70,6 @@ ARC_STEP_INCREMENT_DEGREES=360/76;// Size of one subobject aka the Arc lenght of
 // Length of the Higgbee Cut is determined by x times Arc ARC_STEP_INCREMENT_DEGREES (aka 6° if 1°)
 HigbeeIncrementrs=6;
 HiggBee=ARC_STEP_INCREMENT_DEGREES*HigbeeIncrementrs;
-
 
 // The Screw head diameter
 ScrewMount_D=15;
@@ -229,8 +223,8 @@ if (DesignStatus=="printing"){
                                                         Durchmesser_Flasche,
                                                         Spacing_Lid_Can_Top,
                                                         Spacing_Lid_Can_Cylinder,
-                                                        36,76); //                                          Child [4]
-                #Can_to_Lid_Spaching_Difference_Cut(     HoeheFlasche,      //                                   Child [5]
+                                                        36,76); //                                              Child [4]
+                #Can_to_Lid_Spaching_Difference_Cut(     HoeheFlasche,      //                                  Child [5]
                                                         Durchmesser_Flasche,     // CANDIAMETER
                                                         Wandstaerke_Flasche,      // CANWALLTHICKNESS
                                                         Spacing_Lid_Can_Cylinder,   // SPACING_LID_CAN_CYLINDER
@@ -256,8 +250,8 @@ if (DesignStatus=="printing_2"){
     difference(){
         Main_Assembly_2(  36,
                         76,
-                        "false",        // showing ("false") or cutting the tread
-                        "false"){
+                        false,        // showing ("false") or cutting the tread
+                        false){
         //difference(){
             //union(){
                 translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness]){
@@ -334,16 +328,16 @@ if (DesignStatus=="sizing"){
 if (DesignStatus=="coloring"){
     Deutsches_Welle_Polen(36,76,100){
         translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness]){
-            Lid(    HoeheDeckel,//                                                                          Child [0]
-                    Durchmesser_Flasche,
-                    WandstaerkeDeckel,
-                    TopThickness,
-                    Spacing_Lid_Can_Cylinder           );
-        }
-        Can(    HoeheFlasche,//                                                                         Child [1]
-                Durchmesser_Flasche,
-                Wandstaerke_Flasche,
-                BottomThickness                    );
+//            Lid(    HoeheDeckel,//                                                                          Child [0]
+//                    Durchmesser_Flasche,
+//                    WandstaerkeDeckel,
+//                    TopThickness,
+//                    Spacing_Lid_Can_Cylinder           );
+//        }
+//        Can(    HoeheFlasche,//                                                                         Child [1]
+//                Durchmesser_Flasche,
+//                Wandstaerke_Flasche,
+//                BottomThickness                    );
         
         Helixiterator( 0,//                                                                             Child [2]
                         0,
@@ -363,15 +357,16 @@ if (DesignStatus=="coloring"){
                         1,
                         6*5]       
                                                     );
-        Top_Spaching_Difference_Cut(10,25,0.3,0.67,36,76); //                                          Child [4]
-        Can_to_Lid_Spaching_Difference_Cut(    HoeheFlasche,      //                                   Child [5]
-                                                25,     // CANDIAMETER
-                                                //5,      // CANWALLTHICKNESS
-                                                0.25,   // SPACING_LID_CAN_CYLINDER
-                                                H1_CYLINDER,    // heigt of the Helix!
-                                                16,76);
+//        Top_Spaching_Difference_Cut(10,25,0.3,0.67,36,76); //                                          Child [4]
+//        Can_to_Lid_Spaching_Difference_Cut(    HoeheFlasche,      //                                   Child [5]
+//                                                25,     // CANDIAMETER
+//                                                //5,      // CANWALLTHICKNESS
+//                                                0.25,   // SPACING_LID_CAN_CYLINDER
+//                                                H1_CYLINDER,    // heigt of the Helix!
+//                                                16,76);
         //sphere(r=12);
         //cube(22,center=true);
+        }
     }
 }
 // ==================================
@@ -462,8 +457,8 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
 //}
 module Main_Assembly_2(LOW_RESOLUTION=12,HIGH_RESOLUTION=36,CUT_MODULES_RENDERED,CUTTING_IS_SET){
 $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) set to 12, in Reder (F6) is set to 76
-// === makes ist bunt
-    Collor_it_Ruffly(1/255*160,1/255*176,1/255*200,true){
+// === makes it bunt
+    Collor_it_Ruffly(1/255*160,1/255*176,1/255*200,CUTTING_IS_SET){
     //    see_me_in_colourful(CUTTING_IS_SET){
         translate([0,0,0]){
             difference(){
@@ -471,7 +466,7 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
                 union(){
                     //children(0);
                     //TEST_OBJECT();
-                    !Collor_it_Ruffly(1/255*60,1/255*76,1/255*20,true){
+                    Collor_it_Ruffly(1/255*60,1/255*76,1/255*20,CUTTING_IS_SET){
                         render(convexity=10){children(3);}
                     }
     //                    translate([25,40,15]){                    
@@ -483,7 +478,7 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
             }
         }
     }
-    Collor_it_Ruffly(1/255*160,1/255*176,1/255*100,true){
+    Collor_it_Ruffly(1/255*160,1/255*176,1/255*100,CUTTING_IS_SET){
         difference(){
             render(convexity=10){children(0);}
             union(){
@@ -506,8 +501,8 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
             }
         }
     }
-    Collor_it_Ruffly(1/255*60,1/255*176,1/255*100,true){
-        if(CUT_MODULES_RENDERED=="true"){
+    Collor_it_Ruffly(1/255*60,1/255*176,1/255*100,CUTTING_IS_SET){
+        if(CUT_MODULES_RENDERED==true){
             translate([0,0,0]){
                 render(convexity=10){children(2);} 
                 }
