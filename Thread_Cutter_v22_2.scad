@@ -304,7 +304,7 @@ if (DesignStatus=="printing_2"){
             //}
         }
         translate([15,15,0]){
-            //cube([30,30,150],center=true);
+            cube([30,30,150],center=true);
         }
     }    
 }
@@ -327,45 +327,44 @@ if (DesignStatus=="sizing"){
 }
 if (DesignStatus=="coloring"){
     Deutsches_Welle_Polen(36,76,100){
-        translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness]){
-//            Lid(    HoeheDeckel,//                                                                          Child [0]
-//                    Durchmesser_Flasche,
-//                    WandstaerkeDeckel,
-//                    TopThickness,
-//                    Spacing_Lid_Can_Cylinder           );
-//        }
-//        Can(    HoeheFlasche,//                                                                         Child [1]
-//                Durchmesser_Flasche,
-//                Wandstaerke_Flasche,
-//                BottomThickness                    );
-        
-        Helixiterator( 0,//                                                                             Child [2]
+        translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness]){        
+        Helixiterator(  0,//                                                                             Child [2]
                         0,
                         HoeheFlasche-HoeheDeckel+TopThickness+BottomThickness,
                         ["ADD",
                         "INN",
                         ThreadSpaceing,
                         1,
-                        6*5]       
-                                                    );
-        Helixiterator( 0,//                                                                             Child [3]
+                        6*5]            );
+        }
+    }
+}
+
+if (DesignStatus=="Thread_Object_Innward"){
+    Deutsches_Welle_Polen(36,76,100){
+        translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness]){        
+        Helixiterator(  0,//                                                                             Child [2]
                         0,
                         HoeheFlasche-HoeheDeckel+TopThickness+BottomThickness,
-                        ["CUT",
+                        ["ADD",
                         "INN",
                         ThreadSpaceing,
                         1,
-                        6*5]       
-                                                    );
-//        Top_Spaching_Difference_Cut(10,25,0.3,0.67,36,76); //                                          Child [4]
-//        Can_to_Lid_Spaching_Difference_Cut(    HoeheFlasche,      //                                   Child [5]
-//                                                25,     // CANDIAMETER
-//                                                //5,      // CANWALLTHICKNESS
-//                                                0.25,   // SPACING_LID_CAN_CYLINDER
-//                                                H1_CYLINDER,    // heigt of the Helix!
-//                                                16,76);
-        //sphere(r=12);
-        //cube(22,center=true);
+                        6*5]            );
+        }
+    }
+}
+if (DesignStatus=="Thread_Object_Outward"){
+    Deutsches_Welle_Polen(36,76,100){
+        translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness]){        
+        Helixiterator(  0,//                                                                             Child [2]
+                        0,
+                        HoeheFlasche-HoeheDeckel+TopThickness+BottomThickness,
+                        ["ADD",
+                        "OUT",
+                        ThreadSpaceing,
+                        0,
+                        6*5]            );
         }
     }
 }
