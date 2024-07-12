@@ -1,31 +1,19 @@
 // * Discription what the *.scad is about ect.
+// A Module to get nice Threads on objects
 
 // ==================================
 // = Used Libraries =
 // ==================================
-
 
 // ==================================
 // = Variables =
 // ==================================
 
 // sizing or printing or print a small part to test the object.
-DesignStatus="Tread_Dimension_CUT_Test";//["sizing","Thread_Object_Innward","sizing_Inn_Cut","Thread_Object_Outward","sizing_Out_Cut","fitting","Tread_Dimension_CUT_Test","printing","printing_2","coloring"]
-//      "sizing": 
-//      "Thread_Object_Innward":
-//      "sizing_Inn_Cut":
-//----------------------------------
+DesignStatus="printing";//["Thread_Object_Innward","Thread_Object_Outward","printing"]
+// "printing":                  Printable Assembly part_1, part_2, (Example)
+// "Thread_Object_Innward":
 //  "Thread_Object_Outward": (ridge faching outward)
-////    On the lid:
-////    -   cut full trough open end
-////    -   cut of Spiral at the top of the lid, aka roof of the lid
-////    on the can:
-////    - apply Higbee at both ends
-// "sizing_Out_Cut":
-// "fitting":
-// "Tread_Dimension_CUT_Test":
-// "printing":                  Printable Assembly part_1, part_2, ...
-
 
 // ==== Can ====
 Durchmesser_Flasche=25.0;
@@ -48,7 +36,6 @@ TOOTH_PROFILE="Trapezoid"; //["Trapezoid","SQUARE","TREAD_TOOTH","TOOTH-ON-TOOTH
 // Choosing wich direction the tread is faching
 Treaddirection="Outward"; //["Outward","Innward","Tread_on_Tread"]
 
-//Strings="foo"; // [foo, bar, baz]
 
 D1_CYLINDER=Durchmesser_Flasche;
 H1_CYLINDER=HoeheDeckel-TopThickness;
@@ -121,10 +108,8 @@ ThreadSpaceing=0.125;
 CylinderSpacingCut=0.15;
 // determines the Radius of a Cylinder that will cut from the lid AND/OR the Cylinder of the bottle, aka the Bottle has D=80mm the Lid has a inner diameter of 80mm. CylinderSpacingCut = 3mm, with CylinderSpacingCutBaseCenter = 2mm and Outward, there will 1mm be cut of the Bottle 2mm from the inner cylinder of the Lid so that it will be bigger
 CylinderSpacingCutBaseCenter=0.15;        
-
 // Vector that containes All Values of the Thread
 // HelixParameterVECTOR=[ThreadDeterminator,Direction,ThreadSpaceing,HiggBeeEndtreatment];
-//
 // HelixParameterVECTOR_2=[    Direction,              // Direction of the Thread, The Cuts can be in the Can or in the Lid.
 //                            ThreadDeterminator,     // Decides between a Cut and a Add,
 //                            ThreadSpaceing,         // A parameter for the Cutting Operation to get a sligtly bigger Cut so that the pices will fit to each other
@@ -132,31 +117,9 @@ CylinderSpacingCutBaseCenter=0.15;
 //                            HiggBeeEndtreatment     // Number from 0 to 3 decides were a HiggBee Cut is Applied
 //                        
 // ];
-
 // Amount the Helix Rises on each segment.
 ASCENT_STEP=(tan(ASCENT_Deg)*D1_CYLINDER*PI/360);
 echo(ASCENT_STEP,"ASCENT_STEP");
-
-//// sizing printing or print a small part to test the object.
-//DesignStatus="sizing"; // ["sizing","fitting","printing"]
-//// Variables seen by customizer
-//
-//TestSlab_X=50;
-//TestSlab_Y=100;
-//TestSlab_Z=30;
-//
-//TestCylinder_H=35;
-//TestCylinder_D1=25;
-//TestCylinder_D2=45;
-//
-//TestSphere_D=42;
-//
-//module __Customizer_Limit__ () {}  // before these, the variables are usable in the cutomizer
-//shown_by_customizer = false;
-//
-//Invisible=42;
-//TestslabTransl_X=25;
-//TestslabRotate_X=30;
 
 // ==================================
 // = Tuning Variables =
@@ -167,17 +130,6 @@ echo(ASCENT_STEP,"ASCENT_STEP");
 // = Customizer Section =
 // ==================================
 
-/* Spicker ... ;-P
-// ==== Can ====        (CANHEIGHT=45,CANDIAMETER=45,CANWALLTHICKNESS=5,CANBOTTOMTHICKNESS=2)
-HoeheFlasche=10;
-Durchmesser_Flasche=25;
-Wandstaerke_Flasche=1.5;
-BottomThickness=1;
-// ==== Lid ====        (LIDHEIGHT=25,CANDIAMETER=45,LIDWALLTHICKNESS=5,LIDTOPTHICKNESS=2,Spacing_Lid_Can_Cylinder=0.5)
-HoeheDeckel=7;
-WandstaerkeDeckel=1.5;
-TopThickness=0.7;
-*/
 if (DesignStatus=="printing"){
     // the parts gets sprayed out to print them
     // heigh resolution
@@ -242,102 +194,6 @@ if (DesignStatus=="printing"){
         }
     }    
 }
-if (DesignStatus=="printing_2"){
-    // the parts gets sprayed out to print them
-    // heigh resolution
-    difference(){
-        Main_Assembly_2(  36,
-                        76,
-                        false,        // showing ("false") or cutting the tread
-                        false){
-        //difference(){
-            //union(){
-                translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness]){
-                    Lid(    HoeheDeckel,//                                                                          Child [0]
-                            Durchmesser_Flasche,
-                            WandstaerkeDeckel,
-                            TopThickness,
-                            Spacing_Lid_Can_Cylinder           );
-                }
-                Can(    HoeheFlasche,//                                                                         Child [1]
-                        Durchmesser_Flasche,
-                        Wandstaerke_Flasche,
-                        BottomThickness                    );
-                Helixiterator( 0,//                                                                             Child [2]
-                                0,
-                                HoeheFlasche-HoeheDeckel+TopThickness+BottomThickness,
-                                ["ADD",
-                                "INN",
-                                ThreadSpaceing,
-                                1,
-                                6*5]       
-                                                            );
-                Helixiterator( 0,//                                                                             Child [3]
-                                0,
-                                HoeheFlasche-HoeheDeckel+TopThickness+BottomThickness,
-                                ["CUT",
-                                "INN",
-                                ThreadSpaceing,
-                                1,
-                                6*5]       
-                                                            );
-                Top_Spaching_Difference_Cut(            HoeheFlasche,
-                                                        Durchmesser_Flasche,
-                                                        Spacing_Lid_Can_Top,
-                                                        Spacing_Lid_Can_Cylinder,
-                                                        36,76); //                                          Child [4]
-                Can_to_Lid_Spaching_Difference_Cut(     HoeheFlasche,      //                                   Child [5]
-                                                        Durchmesser_Flasche,     // CANDIAMETER
-                                                        Wandstaerke_Flasche,      // CANWALLTHICKNESS
-                                                        Spacing_Lid_Can_Cylinder,   // SPACING_LID_CAN_CYLINDER
-                                                        H1_CYLINDER,    // heigt of the Helix!
-                                                        36,76); // $fn Resolution See vs final Render
-        //        Treadmaker(    THREADDIRECTION="INN",
-        //                        DETERMINATOR="ADD",
-        //                        X=0,
-        //                        Y=0,
-        //                        Z=HoeheFlasche-HoeheDeckel+TopThickness,
-        //                        HiggBeeEndtreatment=0,
-        //                        HIGG_BEE=0            );
-            //}
-        }
-        translate([15,15,0]){
-            cube([30,30,150],center=true);
-        }
-    }    
-}
-if(DesignStatus=="fitting"){
-    intersection(){
-        translate([0,0,1]){
-            cube([1000,1000,1],center=true);
-        }
-        Main_Assembly(16,76,"false"){
-        }
-    }
-}
-if (DesignStatus=="sizing"){
-    Main_Assembly(16,76,"true"){
-        Lid();
-        Can();
-        sphere(r=12);
-        cube(22,center=true);
-        }
-}
-if (DesignStatus=="coloring"){
-    Deutsches_Welle_Polen(36,76,100){
-        translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness]){        
-        Helixiterator(  0,//                                                                             Child [2]
-                        0,
-                        HoeheFlasche-HoeheDeckel+TopThickness+BottomThickness,
-                        ["ADD",
-                        "INN",
-                        ThreadSpaceing,
-                        1,
-                        6*5]            );
-        }
-    }
-}
-
 if (DesignStatus=="Thread_Object_Innward"){
     Deutsches_Welle_Polen(36,76,100){
         translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness]){        
@@ -446,86 +302,6 @@ $fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) se
         }
     }
 }
-//!render(convexity=1){
-//    difference(){
-//        cube(50);
-//        sphere(50);
-//    }
-//}
-module Main_Assembly_2(LOW_RESOLUTION=12,HIGH_RESOLUTION=36,CUT_MODULES_RENDERED,CUTTING_IS_SET){
-$fn = $preview ? LOW_RESOLUTION : HIGH_RESOLUTION ; // Facets in preview (F5) set to 12, in Reder (F6) is set to 76
-// === makes it bunt
-    Collor_it_Ruffly(1/255*160,1/255*176,1/255*200,CUTTING_IS_SET){
-    //    see_me_in_colourful(CUTTING_IS_SET){
-        translate([0,0,0]){
-            difference(){
-                render(convexity=10){children(1);}
-                union(){
-                    //children(0);
-                    //TEST_OBJECT();
-                    Collor_it_Ruffly(1/255*60,1/255*76,1/255*20,CUTTING_IS_SET){
-                        render(convexity=10){children(3);}
-                    }
-    //                    translate([25,40,15]){                    
-    //                        scale([0.4,0.4,0.4]){        
-    //                            //TEST_CUTCUBE();
-    //                        }
-    //                    }
-                }
-            }
-        }
-    }
-    Collor_it_Ruffly(1/255*160,1/255*176,1/255*100,CUTTING_IS_SET){
-        difference(){
-            render(convexity=10){children(0);}
-            union(){
-                render(convexity=10){children(4);}
-                //children(5); 
-            }
-            union(){
-                render(convexity=10){children(5);}
-            }
-        }
-        difference(){
-            render(convexity=10){children(2);}
-            //  Upper Cut of Thread helix
-            translate([0,0,HoeheFlasche+Spacing_Lid_Can_Top]){
-                render(convexity=10){cylinder(h=H1_CYLINDER,d=60);}
-            }
-            //  Lower Cut of Thread helix
-            translate([0,0,HoeheFlasche-HoeheDeckel+TopThickness+Spacing_Lid_Can_Top-H1_CYLINDER]){ 
-                render(convexity=10){cylinder(h=H1_CYLINDER,d=60);}
-            }
-        }
-    }
-    Collor_it_Ruffly(1/255*60,1/255*176,1/255*100,CUTTING_IS_SET){
-        if(CUT_MODULES_RENDERED==true){
-            translate([0,0,0]){
-                render(convexity=10){children(2);} 
-                }
-            translate([0,0,0]){
-                children(4);
-            }
-            translate([0,0,0]){
-                render(convexity=10){children(5);}
-            }
-        }
-        else{
-                echo("CUT_MODULES_RENDERED= ",CUT_MODULES_RENDERED);
-            }
-        translate([0,0,0]){
-        }
-        union(){
-            
-        }
-        translate([ 0,0,50]){
-            difference(){
-                //children(2);
-                //children(3);
-            }
-        }
-    }
-}
 // ===============================================================================
 // =----- Module to help coloring different modules to make it easier 
 // ===============================================================================
@@ -614,7 +390,6 @@ module Collor_it_Ruffly(RED=124,GRN=124,BLU=124,CUT_It=false){
 module TILT_CUT(TILT_ANGLE=80,ROT_ANGLE_ALIGN=-90,HEIGHT=50,DIAMETER=35){
     rotate([TILT_ANGLE,0,ROT_ANGLE_ALIGN]){
         cylinder(h=HEIGHT,d=DIAMETER);
-    
     }
 }
 // ===============================================================================
@@ -910,58 +685,9 @@ module 3D_Base_Shape(DELTA,DIRECTION){
         }
     }
 }
-
-// for testing
-//TEST_OBJECT();
-module TEST_OBJECT(){
-    difference(){
-        TEST_CUTCUBE(TestSlab_X,TestSlab_Y,TestSlab_Z);
-        TEST_CUTCYLINDER();
-    }
-    TEST_SPHERE();
-}
-
-module TEST_CUTCUBE(X=30,Y=60,Z=15){
-    cube([X,Y,Z]);
-}
-module TEST_SPHERE(D=TestSphere_D){
-//$fn = $preview ? 12 : 72; // Facets in preview (F5) set to 12, in Reder (F6) is set to 72
-    difference(){
-        sphere(d=D);
-        TEST_CUTCYLINDER();
-    }
-}
-module TEST_CUTCYLINDER(H=TestCylinder_H,D1=TestCylinder_D1,D2=TestCylinder_D2){
-    cylinder(h=H,d1=D1,d2=D2,$fn=24);
-}
 // ===============================================================================
 // ---------------------------------- Cutting Modules ----------------------------
 // ===============================================================================
-//Screwcutter(100,10,100,4,1,5);
-module Screwcutter( SCREW_HEAD_h=200,
-                    SCREW_HEAD_d=40,
-                    SCREW_BOLT_h=200,
-                    SCREW_BOLT_d=3,
-                    SCREW_CAMPFER_h,
-                    SCREW_CAMPFER_d=SCREW_BOLT_d    ){
-    translate([0,0,-SCREW_HEAD_h]){
-        cylinder(h=SCREW_HEAD_h,d=SCREW_HEAD_d,$fn=32);
-    }
-    translate([0,0,0]){
-        cylinder(h=SCREW_CAMPFER_h,d2=SCREW_BOLT_d,d1=SCREW_CAMPFER_d,$fn=32);    
-    }
-    translate([0,0,0]){
-        cylinder(h=SCREW_BOLT_h,d=SCREW_BOLT_d,$fn=32);
-    }
-}
-//Bolt(25,3,8,3);
-module Bolt(BOLTLENGTH,BOLTDIAMETER,HEADDIAMETER,HEADHEIGHT){
-    cylinder(h=BOLTLENGTH,d=BOLTDIAMETER,center=false,$fn=FN_Performance);
-    translate([0,0,-HEADHEIGHT/2]){
-        cylinder(h=HEADHEIGHT,d=HEADDIAMETER,center=true,$fn=6);
-        cylinder(h=HEADHEIGHT,d=HEADDIAMETER,center=true,$fn=6);
-    }
-}
 //Projection_Cutter(3){sphere(10);};
 module Projection_Cutter(Offset_z){    
     projection(cut = true){
@@ -1005,7 +731,6 @@ module Intersection_Test_Cut(PLAIN,THICKNESS,OFFSET){
 // ===============================================================================
 // ---------------------------------- Linear Extrude Modules ---------------------
 // ===============================================================================
-
 //Ring_Shaper(3,15,1.5);
 module Ring_Shaper(HEIGHT,OUTER,WALLTHICKNESS){
     linear_extrude(HEIGHT){
@@ -1087,96 +812,13 @@ module 2D_Rounded_Square_Base_Shape(DIMENSION_X=10,DIMENSION_Y=20,RADIUS=2,CENTE
         }
     }
 }
-//HEX_Mesh_Pattern(){ Mesh(2.5,2.5);}
-module HEX_Mesh_Pattern(X=10,Y=30,DELTA=5,GRPL_X=45,GRPL_Y=115){
-Count_X=X;
-Count_Y=Y;
-DIMENSION_X=35;
-DIMENSION_Y=67;
-//DELTA=1;
-X_STEPP=5.5+DELTA;
-Y_STEPP=7.5+DELTA;
-
-k=DELTA; //Distance between Hexshapes may be HEX_D/4 is good
-HEX_D=(DIMENSION_X-((Count_X-1)*k/2))/(Count_X-1);
-SCALE_Y=DIMENSION_Y/((HEX_D/2+k/4)*sqrt(3)*(Count_Y-1));
-echo("HEX_D*Count_Y",HEX_D*(Count_Y));
-echo("GrindingPlate_Y",DIMENSION_Y);
-echo("SCALE_Y",SCALE_Y);
-//square([15,(HEX_D/2+k/4)*sqrt(3)*(Count_Y-1)]); // Helper Foo
-// +++++++++++++++++++++++++++++++++++++++++
-    scale([1,SCALE_Y,1]){
-        union(){
-            for(j=[0:1:Count_Y-1]){
-                for(i=[0:1:Count_X-1-j%2]){
-                    translate([i*(HEX_D+k/2),0,0]){
-                        translate([(HEX_D/2+k/4)*(j%2),
-                                    j*((HEX_D/2+k/4)*sqrt(3)),
-                                    0]                          ){
-                        //translate([0,j*Y_STEPP,0]){
-                        rotate([0,0,60]){
-                            //Mesh(0.5){square([HEX_D,HEX_D*1.2],center=true);}
-                            circle(d=HEX_D,$fn=6);
-                        }
-                            //children();
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-//Mesh(4){square([7,10],center=true);}
-module Mesh(RADIUS=0.0){
-minkowski(){
-    children();
-    circle(r=RADIUS,$fn=144);
-    }
-}
 // ===============================================================================
 // =--------------------------------- Symetrie Helper ---------------------------=
 // ===============================================================================
-// XY_Symetrie(10,25){cube(10);}
-module XY_Symetrie(X=10,Y=25){
-   translate([X,Y,0]){
-       children();
-       }
-    mirror([1,0,0]){
-        translate([X,Y,0]){
-            children();
-       }
-    }
-    mirror([0,1,0]){
-        translate([X,Y,0]){
-            children();
-        }
-        mirror([1,0,0]){
-            translate([X,Y,0]){
-                children();
-            }
-        }
-    }
-}
-module MirrorMirrorOnTheWall(Offset_X,Offset_Y){
-    translate([-Offset_X,Offset_Y,0]){
-        children();
-        mirror([0,1,0]){
-            children();
-        }
-    }
-    translate([Offset_X,-Offset_Y,0]){
-        mirror([1,0,0]){
-            children();
-            mirror([1,0,0]){
-                children();
-            }
-        }
-    }
-}
+
 // ===============================================================================
 // =--------------------------------- Textembossing -----------------------------=
 // ===============================================================================
-
 
 // ===============================================================================
 // =--------------------------------- Smoothing ---------------------------------=
@@ -1225,37 +867,11 @@ module Chamfer_INWARD(DELTA_INN=3){
 // ===============================================================================
 // =--------------------------------- Ruthex --------------------------------=
 // ===============================================================================
-// Dimensions for Ruthex Tread inseerts
-//RUTHEX_M3();
-module RUTHEX_M3(){    
-L=5.7+5.7*0.25; // Length + Margin
-echo("RUTHEX",L);
-D1=4.0;    
-    translate([0,0,0]){
-        rotate([0,0,0]){
-            translate([0,0,0]){
-                cylinder(h=L,d1=D1,d2=D1,$fn=FN_Performance);
-            }
-        }
-    }
-}
+
 // ===============================================================================
 // =--------------------------------- Import STL --------------------------------=
 // ===============================================================================
-module NAME_OF_IMPORT(){
-    rotate([0,0,-90]){
-        translate([-515,-100,-45]){
-            import("PATH/TO/FILE.stl",convexity=3);
-        }
-    }
-}
+
 // ===============================================================================
 // =--------------------------------- Import PNG --------------------------------=
 // ===============================================================================
-module NAME_OF_IMPORT(){
-    rotate([0,0,-90]){
-        translate([-515,-100,-45]){
-            import("PATH/TO/FILE.PNG",convexity=3);
-        }
-    }
-}
